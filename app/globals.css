@@ -1,0 +1,237 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Fira+Code&display=swap');
+@import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css');
+@import url('https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+        
+/* THEME VARIABLES */
+:root, [data-theme="dark-sakura"] {
+    --bg-main: #11111b;
+    --bg-content: #0c0c14;
+    --bg-card: #1c1c2b;
+    --bg-input: #171723;
+    --bg-code: #0d1117;
+    
+    --text-primary: #f8f8ff;
+    --text-secondary: #d1d5db;
+    --text-muted: #6b7280;
+    
+    --border-color: #2a2a3c;
+    --border-color-light: #4b5563;
+    
+    --accent-color: #f472b6;
+    --accent-color-dark: #ec4899;
+    --accent-color-darker: #db2777;
+    --accent-text: #f8f8ff;
+}
+
+[data-theme="dark-cyan"] {
+    --bg-main: #0a0f1e;
+    --bg-content: #030712;
+    --bg-card: #1a2332;
+    --bg-input: #0f1729;
+    --accent-color: #22d3ee;
+    --accent-color-dark: #06b6d4;
+    --accent-color-darker: #0891b2;
+}
+
+[data-theme="light-sky"] {
+    --bg-main: #f0f9ff;
+    --bg-content: #ffffff;
+    --bg-card: #ffffff;
+    --bg-input: #f8fafc;
+    --bg-code: #1e293b;
+    --text-primary: #020617;
+    --text-secondary: #334155;
+    --text-muted: #64748b;
+    --border-color: #e2e8f0;
+    --border-color-light: #cbd5e1;
+    --accent-color: #38bdf8;
+    --accent-color-dark: #0ea5e9;
+    --accent-color-darker: #0284c7;
+    --accent-text: #ffffff;
+}
+
+/* BASE STYLES */
+html, body {
+    height: 100%;
+    overscroll-behavior-y: none; /* Prevent pull-to-refresh / bounce effect causing layout shifts */
+}
+
+body { 
+    font-family: 'Poppins', sans-serif;
+    background-color: var(--bg-main); 
+    color: var(--text-secondary);
+    transition: background-color 0.3s, color 0.3s;
+    overflow-x: hidden;
+    -webkit-tap-highlight-color: transparent; /* Mobile Native feel */
+}
+
+.font-mono { font-family: 'Fira Code', monospace; }
+
+/* Background Animation - REDUCED LOAD */
+.background-animation {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    z-index: -1;
+    opacity: 0.4; /* Reduced opacity */
+}
+.background-animation::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle at 50% 50%, rgba(236, 72, 153, 0.15), transparent 60%),
+                radial-gradient(circle at 80% 20%, rgba(34, 211, 238, 0.1), transparent 40%);
+}
+
+/* UTILITY CLASSES */
+.bg-main { background-color: var(--bg-main); }
+.bg-content { background-color: var(--bg-content); }
+.bg-card { background-color: var(--bg-card); }
+.bg-input { background-color: var(--bg-input); }
+.hljs, .bg-code { background-color: var(--bg-code) !important; color: #d1d5db; }
+.text-primary { color: var(--text-primary); }
+.text-secondary { color: var(--text-secondary); }
+.text-muted { color: var(--text-muted); }
+.border-default { border-color: var(--border-color); }
+.border-light { border-color: var(--border-color-light); }
+.text-accent { color: var(--text-accent); }
+.border-accent { border-color: var(--accent-color-dark); }
+.border-accent-light { border-color: var(--accent-color); opacity: 0.3; }
+.bg-accent { background-color: var(--accent-color-dark); color: var(--accent-text); }
+.bg-accent-hover:hover { background-color: var(--accent-color-darker); }
+.ring-accent:focus { --tw-ring-opacity: 1; ring-color: var(--accent-color-dark); box-shadow: 0 0 0 2px var(--accent-color-dark); }
+
+/* Native-like Card Styles */
+.native-card {
+    background-color: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 1rem; /* Rounded XL */
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    transition: transform 0.2s ease;
+}
+.native-card:active {
+    transform: scale(0.98);
+}
+
+/* Bottom Sheet Animation */
+@keyframes slideUp {
+    from { transform: translateY(100%); }
+    to { transform: translateY(0); }
+}
+.animate-slide-up {
+    animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Page Slide Animations */
+@keyframes slideInRight {
+    from { transform: translateX(100%); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+}
+
+@keyframes slideOutRight {
+    from { transform: translateX(0); opacity: 1; }
+    to { transform: translateX(100%); opacity: 0; }
+}
+
+.animate-slide-in-right {
+    animation: slideInRight 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-slide-out-right {
+    animation: slideOutRight 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Custom scrollbar - Minimalist */
+::-webkit-scrollbar { width: 4px; height: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 2px; }
+
+/* Animation Utilities */
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+.animate-fade-in { animation: fadeIn 0.4s ease-out forwards; }
+
+/* Gradient Text - Keeping it but ensuring contrast */
+.gradient-text {
+    background: linear-gradient(135deg, var(--accent-color) 0%, var(--accent-color-dark) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+/* Prose Fixes for Mobile */
+.prose-styles { font-size: 0.95rem; line-height: 1.6; }
+.prose-styles img { border-radius: 0.75rem; }
+.prose-styles pre { border-radius: 0.5rem; margin: 1rem 0; }
+
+/* Bottom Nav Active */
+.bottom-nav-active {
+    color: var(--accent-color);
+}
+
+/* NProgress Customization */
+#nprogress .bar {
+    background: var(--accent-color) !important;
+    height: 3px !important;
+}
+#nprogress .peg {
+    box-shadow: 0 0 10px var(--accent-color), 0 0 5px var(--accent-color) !important;
+}
+
+/* LIGHTNING LOADER ANIMATION */
+.lightning-loader {
+    position: fixed;
+    top: 15px;
+    right: 20px;
+    z-index: 10031; /* Higher than NProgress bar */
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Show when NProgress is busy (class added by nprogress lib) */
+html.nprogress-busy .lightning-loader {
+    opacity: 1;
+}
+
+.lightning-icon {
+    font-size: 1.2rem;
+    color: #fbbf24; /* Amber 400 */
+    filter: drop-shadow(0 0 8px #fbbf24);
+    animation: flashBolt 0.5s infinite alternate;
+    position: relative;
+    z-index: 2;
+}
+
+.lightning-trail {
+    position: absolute;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: 2px solid transparent;
+    border-top-color: #fcd34d; /* Amber 300 */
+    border-right-color: transparent;
+    animation: spinTrail 0.8s linear infinite;
+    box-shadow: 0 0 10px rgba(251, 191, 36, 0.3);
+}
+
+@keyframes flashBolt {
+    0% { opacity: 0.7; transform: scale(0.9); }
+    100% { opacity: 1; transform: scale(1.15); filter: drop-shadow(0 0 15px #fbbf24); }
+}
+
+@keyframes spinTrail {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}

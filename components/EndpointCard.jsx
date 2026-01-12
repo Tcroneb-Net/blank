@@ -1,0 +1,363 @@
+'use client';
+import React, { useState, useRef, useEffect } from 'react';
+import MethodBadge from './MethodBadge';
+import CopyButton from './CopyButton';
+import InfoModal from './InfoModal';
+
+const EndpointCard = ({ endpoint, baseUrl }) => {
+    const [isOpen, setIsOpen] = useState(false);
+    const [activeTab, setActiveTab] = useState('params'); 
+    const [isLoading, setIsLoading] = useState(false);
+    const [finalData, setFinalData] = useState(null);
+    const [isInfoOpen, setIsInfoOpen] = useState(false);
+    const [formValues, setFormValues] = useState({});
+    
+    const formRef = useRef(null);
+    const fullUrl = `${baseUrl}${endpoint.path}`;
+
+    const handleTryItOut = async (e) => {
+        e.preventDefault();
+        setFinalData(null);
+        setActiveTab('response');
+        setIsLoading(true);
+
+        const formData = new FormData(formRef.current);
+        const queryParams = new URLSearchParams();
+        const bodyParams = {};
+        let path = endpoint.path;
+
+        endpoint.params.forEach(param => {
+            const value = formData.get(param.name);
+            if (value) {
+                if (param.in === 'query') queryParams.append(param.name, value);
+                else if (param.in === 'body') {
+                    // Coba parse string JSON kembali ke objek/array jika parameternya JSON string
+                    try {
+                        const trimmed = value.trim();
+                        if ((trimmed.startsWith('{') && trimmed.endsWith('}')) || 
+                            (trimmed.startsWith('[') && trimmed.endsWith(']'))) {
+                            bodyParams[param.name] = JSON.parse(trimmed);
+                        } else {
+                            bodyParams[param.name] = value;
+                        }
+                    } catch (e) {
+                        bodyParams[param.name] = value;
+                    }
+                }
+                else if (param.in === 'path') path = path.replace(`:${param.name}`, encodeURIComponent(value));
+            }
+        });
+
+        const fetchOptions = { method: endpoint.method, headers: {} };
+        if (Object.keys(bodyParams).length > 0) {
+            fetchOptions.headers['Content-Type'] = 'application/json';
+            fetchOptions.body = JSON.stringify(bodyParams);
+        }
+        
+        const finalUrl = `${baseUrl}${path}${queryParams.toString() ? '?' + queryParams.toString() : ''}`;
+
+        try {
+            const res = await fetch(finalUrl, fetchOptions);
+            const contentType = res.headers.get("content-type") || "";
+
+            if (contentType.includes("application/json")) {
+                const json = await res.json();
+                setIsLoading(false);
+                setFinalData({ 
+                    ok: res.ok, 
+                    status: res.status, 
+                    data: JSON.stringify(json, null, 2),
+                    isStream: false 
+                });
+            } 
+            else if (res.body) {
+                setIsLoading(false); 
+                setFinalData({ 
+                    ok: res.ok, 
+                    status: res.status, 
+                    data: "", 
+                    isStream: true 
+                });
+
+                const reader = res.body.getReader();
+                const decoder = new TextDecoder();
+                
+                while (true) {
+                    const { done, value } = await reader.read();
+                    if (done) break;
+                    
+                    const chunk = decoder.decode(value, { stream: true });
+                    
+                    setFinalData(prev => ({
+                        ...prev,
+                        data: (prev?.data || "") + chunk
+                    }));
+                }
+            } else {
+                const text = await res.text();
+                setIsLoading(false);
+                setFinalData({ ok: res.ok, status: res.status, data: text, isStream: false });
+            }
+        } catch (error) {
+            setIsLoading(false);
+            setFinalData({ ok: false, status: 'Error', data: error.message, isStream: false });
+        }
+    };
+
+    const autoFill = () => {
+        if (!endpoint.example) return;
+        try {
+            const jsonMatch = endpoint.example.match(/body:\s*JSON\.stringify\(([\s\S]*?)\)/);
+            if (jsonMatch) {
+                const bodyStr = jsonMatch[1];
+                let parsedBody = {};
+
+                try {
+                    parsedBody = JSON.parse(bodyStr);
+                } catch (e) {
+                    try {
+                        parsedBody = new Function(`return ${bodyStr}`)();
+                    } catch (evalErr) {
+                        console.error("Auto fill body eval error", evalErr);
+                    }
+                }
+
+                // Konversi nilai objek/array menjadi string agar bisa ditampilkan di input field
+                const processedValues = {};
+                Object.keys(parsedBody).forEach(key => {
+                    const val = parsedBody[key];
+                    if (typeof val === 'object' && val !== null) {
+                        processedValues[key] = JSON.stringify(val);
+                    } else {
+                        processedValues[key] = val;
+                    }
+                });
+
+                setFormValues(prev => ({ ...prev, ...processedValues }));
+            }
+            
+            const urlMatch = endpoint.example.match(/fetch\(['"`](.*?)['"`]/);
+            if (urlMatch) {
+                const urlParts = urlMatch[1].split('?');
+                if (urlParts.length > 1) {
+                    const params = new URLSearchParams(urlParts[1]);
+                    const newValues = {};
+                    params.forEach((val, key) => { 
+                        newValues[key] = val; 
+                    });
+                    setFormValues(prev => ({ ...prev, ...newValues }));
+                }
+            }
+        } catch (e) {
+            console.error("Auto fill parsing error", e);
+        }
+    };
+
+    const handleInputChange = (e) => {
+        const { name, value } = e.target;
+        setFormValues(prev => ({ ...prev, [name]: value }));
+    };
+
+    useEffect(() => {
+        if (isOpen && window.hljs) {
+            if (activeTab === 'example' || (activeTab === 'response' && finalData?.data && !finalData.isStream)) {
+                setTimeout(() => {
+                    document.querySelectorAll('pre code').forEach((block) => {
+                        window.hljs.highlightElement(block);
+                    });
+                }, 10);
+            }
+        }
+    }, [isOpen, activeTab, finalData?.data, finalData?.isStream]);
+
+    return (
+        <>
+            <div className="native-card mb-4 overflow-hidden rounded-2xl">
+                <div 
+                    onClick={() => setIsOpen(!isOpen)}
+                    className="p-4 flex items-center justify-between cursor-pointer active:bg-white/5 transition-colors"
+                >
+                    <div className="flex items-center gap-3 overflow-hidden">
+                        <MethodBadge method={endpoint.method} />
+                        <div className="flex flex-col min-w-0">
+                            <span className="text-xs font-mono text-accent truncate">{endpoint.path}</span>
+                            <span className="text-sm text-primary font-medium truncate">{endpoint.title || endpoint.summary}</span>
+                        </div>
+                    </div>
+                    <div className="flex items-center gap-3 ml-2">
+                         {endpoint.description && (
+                            <button 
+                                onClick={(e) => { e.stopPropagation(); setIsInfoOpen(true); }}
+                                className="w-8 h-8 flex items-center justify-center rounded-full bg-input text-muted hover:text-white transition-colors"
+                            >
+                                <i className="fas fa-info text-xs"></i>
+                            </button>
+                        )}
+                        <i className={`fas fa-chevron-down text-muted transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`}></i>
+                    </div>
+                </div>
+
+                {isOpen && (
+                    <div className="border-t border-default animate-fade-in">
+                        <div className="flex border-b border-default bg-black/10">
+                            {['params', 'example', 'response'].map(tab => (
+                                <button 
+                                    key={tab}
+                                    onClick={() => setActiveTab(tab)} 
+                                    className={`flex-1 py-3 text-xs font-bold uppercase tracking-wide transition-all 
+                                        ${activeTab === tab 
+                                            ? 'text-accent border-b-2 border-accent bg-accent/5' 
+                                            : 'text-muted hover:text-secondary'}`}
+                                >
+                                    {tab}
+                                </button>
+                            ))}
+                        </div>
+
+                        <div className="p-5 bg-black/20">
+                            {activeTab === 'params' && (
+                                <div className="animate-fade-in">
+                                    <form ref={formRef} onSubmit={handleTryItOut}>
+                                        {endpoint.example && (
+                                            <div className="flex justify-end mb-4">
+                                                <button 
+                                                    type="button" 
+                                                    onClick={autoFill}
+                                                    className="text-xs bg-accent/10 text-accent hover:bg-accent/20 px-3 py-1.5 rounded-lg font-semibold transition-colors flex items-center gap-2"
+                                                >
+                                                    <i className="fas fa-magic"></i> Auto Fill
+                                                </button>
+                                            </div>
+                                        )}
+                                        
+                                        {endpoint.params.length > 0 ? (
+                                            <div className="space-y-4">
+                                                {endpoint.params.map(param => (
+                                                    <div key={param.name} className="group">
+                                                        <div className="flex justify-between items-center mb-1.5">
+                                                            <label className="text-xs font-mono text-secondary group-focus-within:text-accent transition-colors">
+                                                                {param.name}
+                                                            </label>
+                                                            <div className="flex gap-2">
+                                                                <span className="text-[10px] px-1.5 py-0.5 rounded bg-gray-800 text-gray-400 uppercase">{param.in}</span>
+                                                                {param.required ? (
+                                                                    <span className="text-[10px] px-1.5 py-0.5 rounded bg-red-900/30 text-red-400 font-bold uppercase">Required</span>
+                                                                ) : (
+                                                                    <span className="text-[10px] px-1.5 py-0.5 rounded bg-gray-800 text-gray-500 uppercase">Optional</span>
+                                                                )}
+                                                            </div>
+                                                        </div>
+                                                        <div className="relative">
+                                                            <div className="absolute left-3 top-1/2 -translate-y-1/2 text-muted group-focus-within:text-accent transition-colors">
+                                                                <i className={`fas ${param.in === 'query' ? 'fa-search' : param.in === 'body' ? 'fa-code' : 'fa-link'} text-xs`}></i>
+                                                            </div>
+                                                            <input
+                                                                name={param.name}
+                                                                type="text"
+                                                                placeholder={param.description || `Enter ${param.name}...`}
+                                                                value={formValues[param.name] || ''}
+                                                                onChange={handleInputChange}
+                                                                className="w-full bg-input border border-default rounded-xl pl-9 pr-3 py-2.5 text-sm text-primary focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent transition-all placeholder-gray-700"
+                                                                required={param.required}
+                                                            />
+                                                        </div>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        ) : (
+                                            <div className="text-center py-6 bg-input/50 rounded-xl border border-dashed border-default">
+                                                <p className="text-sm text-muted">Tidak ada parameter yang diperlukan.</p>
+                                            </div>
+                                        )}
+                                        
+                                        <button 
+                                            type="submit" 
+                                            disabled={isLoading}
+                                            className="mt-6 w-full bg-accent hover:bg-accent-hover text-white font-bold py-3 rounded-xl text-sm shadow-lg shadow-accent/20 transition-all active:scale-95 flex items-center justify-center gap-2"
+                                        >
+                                            {isLoading ? <i className="fas fa-circle-notch fa-spin"></i> : <i className="fas fa-play"></i>}
+                                            {isLoading ? 'Processing...' : 'Test Endpoint'}
+                                        </button>
+                                    </form>
+                                </div>
+                            )}
+
+                            {activeTab === 'example' && (
+                                <div className="relative group animate-fade-in">
+                                    <pre className="bg-code p-4 rounded-xl overflow-x-auto text-xs border border-default custom-scrollbar">
+                                        <code className="language-javascript font-mono">
+                                            {endpoint.example ? endpoint.example.replace(/fetch\(['"](.*?)['"]/g, `fetch('${baseUrl}$1'`) : '// Tidak ada contoh tersedia'}
+                                        </code>
+                                    </pre>
+                                    {endpoint.example && (
+                                        <div className="absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity">
+                                            <CopyButton textToCopy={endpoint.example.replace(/fetch\(['"](.*?)['"]/g, `fetch('${baseUrl}$1'`)} />
+                                        </div>
+                                    )}
+                                </div>
+                            )}
+
+                            {activeTab === 'response' && (
+                                <div className="animate-fade-in min-h-[150px]">
+                                    {!finalData && !isLoading && (
+                                        <div className="flex flex-col items-center justify-center h-full py-8 text-muted space-y-2">
+                                            <i className="fas fa-terminal text-2xl mb-2 opacity-50"></i>
+                                            <p className="text-xs">Tekan &quot;Test Endpoint&quot; untuk melihat hasil.</p>
+                                        </div>
+                                    )}
+                                    
+                                    {isLoading && (
+                                        <div className="flex flex-col items-center justify-center py-10">
+                                            <div className="w-8 h-8 border-2 border-accent border-t-transparent rounded-full animate-spin mb-3"></div>
+                                            <p className="text-xs text-accent animate-pulse">Menghubungi server...</p>
+                                        </div>
+                                    )}
+
+                                    {finalData && (
+                                        <div className="relative">
+                                            <div className={`flex justify-between items-center mb-2 px-1`}>
+                                                <span className={`text-xs font-bold px-2 py-1 rounded ${finalData.ok ? 'bg-green-900/30 text-green-400' : 'bg-red-900/30 text-red-400'}`}>
+                                                    {finalData.status} {finalData.ok ? 'OK' : 'Error'} 
+                                                    {finalData.isStream && <span className="ml-2 text-[10px] bg-blue-900/30 text-blue-400 px-1.5 py-0.5 rounded animate-pulse">STREAMING</span>}
+                                                </span>
+                                                <CopyButton textToCopy={finalData.data} />
+                                            </div>
+                                            <pre className="bg-code p-4 rounded-xl overflow-x-auto max-h-[400px] text-xs border border-default custom-scrollbar shadow-inner">
+                                                <code className={`language-${finalData.isStream ? 'text' : (finalData.ok ? 'json' : 'text')} font-mono`}>
+                                                    {finalData.data}
+                                                </code>
+                                            </pre>
+                                        </div>
+                                    )}
+                                </div>
+                            )}
+                        </div>
+                    </div>
+                )}
+            </div>
+
+            <InfoModal isOpen={isInfoOpen} onClose={() => setIsInfoOpen(false)} title="Detail Endpoint">
+                <div className="space-y-6">
+                    <div>
+                        <h4 className="text-xs font-bold text-muted uppercase tracking-wide mb-2">Summary</h4>
+                        <p className="text-sm text-primary font-medium leading-relaxed">{endpoint.summary || 'Tidak ada ringkasan.'}</p>
+                    </div>
+
+                    <div>
+                        <h4 className="text-xs font-bold text-muted uppercase tracking-wide mb-2">Deskripsi</h4>
+                        <div className="text-secondary text-sm leading-relaxed bg-input p-4 rounded-xl border border-default" dangerouslySetInnerHTML={{ __html: endpoint.description || 'Tidak ada deskripsi.' }} />
+                    </div>
+                    <div>
+                        <h4 className="text-xs font-bold text-muted uppercase tracking-wide mb-2">URL Endpoint</h4>
+                        <div className="bg-black/50 p-3 rounded-xl border border-default flex items-center justify-between gap-2">
+                            <code className="text-xs font-mono text-accent break-all line-clamp-2">{fullUrl}</code>
+                            <CopyButton textToCopy={fullUrl} />
+                        </div>
+                    </div>
+                </div>
+            </InfoModal>
+        </>
+    );
+};
+
+export default EndpointCard;

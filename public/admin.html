@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Admin Console</title>
+    <link rel="icon" href="/favicon.jpg">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <style>
+        /* INJECT GLOBAL THEME VARIABLES */
+        :root {
+            --bg-main: #0f0f13;
+            --bg-content: #000000;
+            --bg-card: #181820;
+            --bg-input: #0a0a0e;
+            --text-primary: #ffffff;
+            --text-secondary: #a1a1aa;
+            --text-muted: #52525b;
+            --border-color: #27272a;
+            --accent-color: #db2777;
+        }
+        
+        body { 
+            background-color: var(--bg-main); 
+            color: var(--text-secondary);
+            font-family: sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        /* Custom Utilities mimicking the app */
+        .bg-card { background-color: var(--bg-card); }
+        .bg-input { background-color: var(--bg-input); }
+        .border-default { border-color: var(--border-color); }
+        .text-primary { color: var(--text-primary); }
+        .text-accent { color: var(--accent-color); }
+        
+        .native-card {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 1rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.2);
+        }
+
+        .input-field {
+            width: 100%;
+            background-color: var(--bg-input);
+            border: 1px solid var(--border-color);
+            border-radius: 0.75rem;
+            padding: 0.75rem 1rem;
+            color: var(--text-primary);
+            outline: none;
+            transition: all 0.2s;
+        }
+        .input-field:focus {
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 1px var(--accent-color);
+        }
+
+        .btn-primary {
+            background-color: var(--accent-color);
+            color: white;
+            font-weight: bold;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.75rem;
+            transition: opacity 0.2s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+        .btn-primary:active { transform: scale(0.98); }
+
+        /* Markdown Preview */
+        .prose h1, .prose h2 { color: white; font-weight: bold; margin-top: 1em; margin-bottom: 0.5em; }
+        .prose p { margin-bottom: 1em; line-height: 1.6; }
+        .prose img { border-radius: 0.5rem; max-width: 100%; }
+        .prose code { background: #27272a; padding: 2px 5px; rounded: 4px; font-family: monospace; color: #f472b6; }
+
+        /* Sticky Header */
+        .sticky-header {
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            background: rgba(15, 15, 19, 0.9);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        /* Tabs */
+        .tab-btn.active {
+            color: var(--accent-color);
+            border-bottom: 2px solid var(--accent-color);
+        }
+        
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #333; border-radius: 3px; }
+    </style>
+</head>
+<body class="antialiased min-h-screen pb-10">
+
+    <!-- Login Overlay -->
+    <div id="login-container" class="fixed inset-0 z-[100] bg-[#0f0f13] flex items-center justify-center p-4">
+        <div class="native-card w-full max-w-sm p-8 text-center">
+            <div class="w-16 h-16 bg-gray-800 rounded-2xl mx-auto flex items-center justify-center mb-6 text-2xl">🔐</div>
+            <h1 class="text-2xl font-bold text-white mb-2">Admin Access</h1>
+            <p class="text-gray-500 mb-6 text-sm">Masukkan kredensial untuk melanjutkan</p>
+            <form id="login-form" class="space-y-4">
+                <input type="password" id="password" name="password" placeholder="Password" required class="input-field text-center tracking-widest">
+                <button type="submit" class="btn-primary w-full">Unlock Console</button>
+                <p id="login-error" class="text-red-400 text-xs mt-2"></p>
+            </form>
+        </div>
+    </div>
+
+    <!-- Main Interface -->
+    <div id="main-content" class="hidden max-w-3xl mx-auto">
+        
+        <!-- Header -->
+        <header class="sticky-header flex justify-between items-center px-4 py-4">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 bg-pink-600 rounded-xl flex items-center justify-center text-white shadow-lg shadow-pink-900/20">
+                    <i class="fas fa-shield-alt"></i>
+                </div>
+                <h1 class="text-xl font-bold text-white">Admin Panel</h1>
+            </div>
+            <button id="logout-btn" class="w-10 h-10 rounded-full bg-gray-800 text-gray-400 hover:text-white flex items-center justify-center">
+                <i class="fas fa-sign-out-alt"></i>
+            </button>
+        </header>
+
+        <!-- Tabs Navigation -->
+        <div class="flex overflow-x-auto border-b border-default bg-black/20 sticky top-[73px] z-40 backdrop-blur-md">
+            <button onclick="switchTab('create')" id="tab-create" class="tab-btn active flex-none px-6 py-3 text-sm font-bold text-gray-500 uppercase tracking-wider">New Post</button>
+            <button onclick="switchTab('list')" id="tab-list" class="tab-btn flex-none px-6 py-3 text-sm font-bold text-gray-500 uppercase tracking-wider">All Posts</button>
+        </div>
+
+        <main class="p-4 space-y-6">
+            
+            <!-- VIEW: CREATE BLOG -->
+            <div id="view-create" class="animate-fade-in">
+                <div class="native-card p-5">
+                    <h2 class="text-lg font-bold text-white mb-4 flex justify-between items-center">
+                        <span id="form-title">New Blog Post</span>
+                        <button id="cancel-edit-btn" class="hidden text-xs bg-gray-700 px-2 py-1 rounded text-white">Cancel Edit</button>
+                    </h2>
+                    
+                    <form id="post-form" class="space-y-4">
+                        <input type="hidden" id="post-id">
+                        
+                        <div>
+                            <label class="text-xs font-bold text-gray-500 mb-1 block uppercase">Cover Image URL</label>
+                            <div class="relative">
+                                <i class="fas fa-image absolute left-3 top-3 text-gray-500"></i>
+                                <input type="url" id="image" placeholder="https://..." class="input-field pl-10 text-sm">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="text-xs font-bold text-gray-500 mb-1 block uppercase">Tag / Category</label>
+                            <div class="relative">
+                                <i class="fas fa-tag absolute left-3 top-3 text-gray-500"></i>
+                                <input type="text" id="tag" placeholder="Update, Tutorial..." required class="input-field pl-10 text-sm">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="text-xs font-bold text-gray-500 mb-1 block uppercase flex justify-between">
+                                Content (Markdown)
+                                <button type="button" onclick="togglePreview()" class="text-pink-500 hover:underline">Toggle Preview</button>
+                            </label>
+                            <textarea id="content" rows="12" placeholder="Write something amazing..." required class="input-field font-mono text-sm"></textarea>
+                            
+                            <!-- Preview Area -->
+                            <div id="markdown-preview" class="hidden mt-4 p-4 bg-black/30 rounded-xl border border-default prose text-sm max-h-60 overflow-y-auto"></div>
+                        </div>
+
+                        <button type="submit" class="btn-primary w-full shadow-lg shadow-pink-900/20">
+                            <i class="fas fa-paper-plane"></i> Publish Post
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- VIEW: LIST BLOG -->
+            <div id="view-list" class="hidden animate-fade-in">
+                <div id="posts-container" class="space-y-4"></div>
+                <div id="pagination" class="flex justify-between items-center mt-6 hidden">
+                    <button id="prev-btn" class="bg-gray-800 px-4 py-2 rounded-lg text-sm font-bold disabled:opacity-50">Prev</button>
+                    <span id="page-info" class="text-xs text-gray-500"></span>
+                    <button id="next-btn" class="bg-gray-800 px-4 py-2 rounded-lg text-sm font-bold disabled:opacity-50">Next</button>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <script>
+        const API_BASE = '/api';
+        const PASSWORD_KEY = 'nexta-admin-auth';
+        
+        let currentPage = 1;
+        let totalPages = 1;
+        let isPreview = false;
+
+        document.addEventListener('DOMContentLoaded', () => {
+            if(localStorage.getItem(PASSWORD_KEY)) showAdmin();
+            document.getElementById('content').addEventListener('input', (e) => {
+                if(isPreview) updatePreview(e.target.value);
+            });
+        });
+
+        function togglePreview() {
+            const area = document.getElementById('content');
+            const preview = document.getElementById('markdown-preview');
+            isPreview = !isPreview;
+            if(isPreview) {
+                preview.classList.remove('hidden');
+                updatePreview(area.value);
+            } else {
+                preview.classList.add('hidden');
+            }
+        }
+
+        function updatePreview(text) {
+            document.getElementById('markdown-preview').innerHTML = marked.parse(text || '*No content*');
+        }
+
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById(`tab-${tabName}`).classList.add('active');
+            
+            ['create', 'list'].forEach(v => {
+                document.getElementById(`view-${v}`).classList.add('hidden');
+            });
+            
+            document.getElementById(`view-${tabName}`).classList.remove('hidden');
+            
+            if(tabName === 'list') fetchPosts(1);
+        }
+
+        function showAdmin() {
+            document.getElementById('login-container').classList.add('hidden');
+            document.getElementById('main-content').classList.remove('hidden');
+        }
+
+        document.getElementById('login-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const pass = e.target.password.value;
+            try {
+                const res = await fetch(`${API_BASE}/admin/login`, {
+                    method: 'POST',
+                    body: JSON.stringify({ password: pass })
+                });
+                if(res.ok) {
+                    localStorage.setItem(PASSWORD_KEY, pass);
+                    showAdmin();
+                } else {
+                    document.getElementById('login-error').textContent = 'Invalid Password';
+                }
+            } catch(e) { alert('Error connecting'); }
+        });
+
+        document.getElementById('logout-btn').onclick = () => {
+            localStorage.removeItem(PASSWORD_KEY);
+            window.location.reload();
+        };
+
+        async function api(endpoint, opts = {}) {
+            const pass = localStorage.getItem(PASSWORD_KEY);
+            opts.headers = { ...opts.headers, 'Authorization': pass, 'Content-Type': 'application/json' };
+            const res = await fetch(`${API_BASE}${endpoint}`, opts);
+            if(res.status === 401) { localStorage.removeItem(PASSWORD_KEY); window.location.reload(); }
+            return res;
+        }
+
+        /* --- BLOG LOGIC --- */
+        async function fetchPosts(page) {
+            const container = document.getElementById('posts-container');
+            container.innerHTML = '<div class="text-center py-10"><div class="w-8 h-8 border-2 border-pink-500 border-t-transparent rounded-full animate-spin mx-auto"></div></div>';
+            
+            try {
+                const res = await fetch(`${API_BASE}/blogs?page=${page}&limit=10`);
+                const data = await res.json();
+                totalPages = data.totalPages;
+                currentPage = data.currentPage;
+                renderPosts(data.posts);
+                updatePagination();
+            } catch(e) { container.innerHTML = '<p class="text-red-400 text-center">Failed to load posts.</p>'; }
+        }
+
+        function renderPosts(posts) {
+            const container = document.getElementById('posts-container');
+            container.innerHTML = '';
+            if(posts.length === 0) { container.innerHTML = '<p class="text-gray-500 text-center">No posts.</p>'; return; }
+
+            posts.forEach(post => {
+                const div = document.createElement('div');
+                div.className = 'native-card p-4 flex gap-3';
+                div.innerHTML = `
+                    <div class="w-16 h-16 bg-gray-800 rounded-lg flex-shrink-0 overflow-hidden relative">
+                        ${post.image ? `<img src="${post.image}" class="w-full h-full object-cover">` : '<div class="w-full h-full bg-gray-700"></div>'}
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <div class="flex justify-between items-start">
+                            <span class="text-[10px] bg-gray-800 text-gray-300 px-2 py-0.5 rounded uppercase font-bold">${post.tag}</span>
+                            <div class="flex gap-2">
+                                <button onclick="editPost('${post.id}')" class="text-gray-400 hover:text-white"><i class="fas fa-pen"></i></button>
+                                <button onclick="deletePost('${post.id}')" class="text-gray-400 hover:text-red-400"><i class="fas fa-trash"></i></button>
+                            </div>
+                        </div>
+                        <p class="text-sm font-bold text-white truncate mt-1">${post.excerpt || 'No Content'}</p>
+                        <p class="text-xs text-gray-500 mt-1">${new Date(post.createdAt).toLocaleDateString()}</p>
+                    </div>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        function updatePagination() {
+            const pag = document.getElementById('pagination');
+            if(totalPages > 1) {
+                pag.classList.remove('hidden');
+                document.getElementById('page-info').textContent = `${currentPage} / ${totalPages}`;
+                document.getElementById('prev-btn').onclick = () => fetchPosts(currentPage - 1);
+                document.getElementById('next-btn').onclick = () => fetchPosts(currentPage + 1);
+                document.getElementById('prev-btn').disabled = currentPage === 1;
+                document.getElementById('next-btn').disabled = currentPage === totalPages;
+            } else { pag.classList.add('hidden'); }
+        }
+
+        document.getElementById('post-form').onsubmit = async (e) => {
+            e.preventDefault();
+            const id = document.getElementById('post-id').value;
+            const body = JSON.stringify({
+                image: document.getElementById('image').value,
+                tag: document.getElementById('tag').value,
+                content: document.getElementById('content').value
+            });
+            const method = id ? 'PUT' : 'POST';
+            const url = id ? `/blogs/${id}` : '/blogs';
+            if((await api(url, { method, body })).ok) { resetForm(); switchTab('list'); }
+            else alert('Failed');
+        };
+
+        async function editPost(id) {
+            try {
+                const post = await (await fetch(`${API_BASE}/blogs/${id}`)).json();
+                document.getElementById('post-id').value = post.id;
+                document.getElementById('image').value = post.image || '';
+                document.getElementById('tag').value = post.tag;
+                document.getElementById('content').value = post.content;
+                document.getElementById('form-title').textContent = 'Edit Post';
+                document.getElementById('cancel-edit-btn').classList.remove('hidden');
+                switchTab('create');
+            } catch(e) { alert('Error'); }
+        }
+
+        function resetForm() {
+            document.getElementById('post-form').reset();
+            document.getElementById('post-id').value = '';
+            document.getElementById('form-title').textContent = 'New Post';
+            document.getElementById('cancel-edit-btn').classList.add('hidden');
+        }
+        document.getElementById('cancel-edit-btn').onclick = resetForm;
+        async function deletePost(id) { if(confirm('Delete?')) { await api(`/blogs/${id}`, { method: 'DELETE' }); fetchPosts(currentPage); } }
+    </script>
+</body>
+</html>
