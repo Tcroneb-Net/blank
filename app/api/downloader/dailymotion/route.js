@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { getVideoInfo } from '../../../../lib/dailymotion';
-import { uploadToTmp } from '../../../../lib/uploader';
+import { uploadToTmpFiles } from '../../../../lib/uploader';
 import { exec } from 'child_process';
 import path from 'path';
 import fs from 'fs-extra';
@@ -67,10 +67,10 @@ export async function POST(req) {
                     });
                 });
 
-                await send(`Download selesai. Mengupload ke penyimpanan PuruBoy...\n`);
+                await send(`Download selesai. Mengupload ke penyimpanan TmpFiles...\n`);
 
                 const fileBuffer = await fs.readFile(tempFilePath);
-                const publicUrl = await uploadToTmp(fileBuffer, `${videoId}.mp4`);
+                const publicUrl = await uploadToTmpFiles(fileBuffer, `${videoId}.mp4`);
 
                 clearInterval(keepAliveInterval);
 
