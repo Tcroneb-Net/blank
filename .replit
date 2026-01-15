@@ -8,7 +8,6 @@ requiredFiles = [".replit", "replit.nix", "package.json", "package-lock.json"]
 
 [nix]
 channel = "stable-24_11"
-packages = ["ffmpeg"]
 
 [deployment]
 run = ["npm", "run dev"]
@@ -38,29 +37,13 @@ author = "agent"
 task = "workflow.run"
 args = "Next.js Dev Server"
 
-[[workflows.workflow.tasks]]
-task = "workflow.run"
-args = "Next.js Dev Server Slice Fix"
-
 [[workflows.workflow]]
 name = "Next.js Dev Server"
 author = "agent"
 
-[workflows.workflow.metadata]
-outputType = "webview"
-
 [[workflows.workflow.tasks]]
 task = "shell.exec"
-args = "npm run dev -- --port 5000 --hostname 0.0.0.0"
-waitForPort = 5000
-
-[[workflows.workflow]]
-name = "Next.js Dev Server Slice Fix"
-author = "agent"
-
-[[workflows.workflow.tasks]]
-task = "shell.exec"
-args = "npm run dev -- --port 5000 --hostname 0.0.0.0"
+args = "npm run dev -- -p 5000"
 waitForPort = 5000
 
 [workflows.workflow.metadata]

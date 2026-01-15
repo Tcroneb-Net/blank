@@ -12,68 +12,48 @@ export async function GET(req, { params }) {
     }
 
     try {
-        const decrypted = decrypt(data);
-        if (!decrypted) {
-            return new NextResponse('Invalid or Corrupted Token', { status: 400 });
-        }
-
-        let targetUrl = '';
-        let requestHeaders = {
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
-        };
-
-        try {
-            // Coba parse jika formatnya JSON (berisi URL + Custom Headers)
-            const parsed = JSON.parse(decrypted);
-            targetUrl = parsed.url;
-            if (parsed.headers) {
-                requestHeaders = { ...requestHeaders, ...parsed.headers };
-            }
-        } catch (e) {
-            // Jika bukan JSON, anggap sebagai raw URL string
-            targetUrl = decrypted;
-        }
+        // 1. Decrypt URL Target
+        const targetUrl = decrypt(data);
         
         if (!targetUrl || !targetUrl.startsWith('http')) {
-             return new NextResponse('Invalid Target URL', { status: 400 });
+             return new NextResponse('Invalid or Corrupted Token', { status: 400 });
         }
 
-        // Gunakan axios stream untuk mem-proxy konten
+        // 2. Security Check (DISABLED)
+        // Domain restriction dinonaktifkan agar media dari host eksternal (seperti output Brat/Vheer yang mungkin beda domain) tetap bisa diakses.
+        /* 
+        const urlObj = new URL(targetUrl);
+        const allowedDomains = ['puruh2o-backend.hf.space', 'puruh2o-gabutcok.hf.space'];
+        
+        if (!allowedDomains.includes(urlObj.hostname)) {
+             return new NextResponse('Forbidden: Access to this domain is restricted.', { status: 403 });
+        }
+        */
+
+        // 3. Proxy Request: Fetch konten dari backend
         const response = await axios.get(targetUrl, {
             responseType: 'stream',
-            timeout: 60000, // Tingkatkan timeout untuk stream video
-            headers: requestHeaders,
-            validateStatus: () => true // Izinkan semua status code agar bisa diteruskan
-        });
-
-        const headers = new Headers();
-        
-        // Teruskan header penting dari sumber asli
-        const importantHeaders = ['content-type', 'content-length', 'accept-ranges', 'content-range'];
-        importantHeaders.forEach(h => {
-            if (response.headers[h]) {
-                headers.set(h, response.headers[h]);
+            timeout: 30000,
+            headers: {
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
             }
         });
 
-        // Pengaturan Cache & Identitas Proxy
-        headers.set('Cache-Control', 'public, max-age=3600');
+        // 4. Return Stream ke Client
+        const headers = new Headers();
+        if (response.headers['content-type']) {
+            headers.set('Content-Type', response.headers['content-type']);
+        }
+        if (response.headers['content-length']) {
+            headers.set('Content-Length', response.headers['content-length']);
+        }
+        headers.set('Cache-Control', 'public, max-age=31536000, immutable');
         headers.set('X-Proxy-By', 'PuruBoy-Secure-Media');
 
-        // Jika request dari browser meminta range (untuk pemutaran video)
-        const range = req.headers.get('range');
-        if (range) {
-            // Catatan: Forwarding range request secara manual membutuhkan logika tambahan.
-            // Untuk saat ini, kita mengembalikan seluruh stream.
-        }
-
-        return new NextResponse(response.data, { 
-            status: response.status,
-            headers 
-        });
+        return new NextResponse(response.data, { headers });
 
     } catch (error) {
         console.error("Proxy Media Error:", error.message);
-        return new NextResponse(`Media Error: ${error.message}`, { status: 500 });
+        return new NextResponse('Media not found or backend unavailable.', { status: 404 });
     }
 }
