@@ -4,6 +4,7 @@ import { uploadToTmpFiles } from '../../../../lib/uploader';
 import { exec } from 'child_process';
 import path from 'path';
 import fs from 'fs-extra';
+import ffmpeg from 'ffmpeg-static';
 
 export const runtime = 'nodejs';
 export const maxDuration = 300; 
@@ -60,7 +61,7 @@ export async function POST(req) {
 
                 // Proses download via FFmpeg
                 await new Promise((resolve, reject) => {
-                    const ffmpegCmd = `ffmpeg -i "${info.streamUrl}" -c copy -bsf:a aac_adtstoasc "${tempFilePath}" -y`;
+                    const ffmpegCmd = `"${ffmpeg}" -i "${info.streamUrl}" -c copy -bsf:a aac_adtstoasc "${tempFilePath}" -y`;
                     exec(ffmpegCmd, (error) => {
                         if (error) return reject(new Error(`FFmpeg Error: ${error.message}`));
                         resolve();
