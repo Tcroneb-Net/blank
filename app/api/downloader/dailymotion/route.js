@@ -25,7 +25,14 @@ export async function POST(req) {
         // If we want a direct MP4, we should check if there are direct qualities.
         // For now, providing the stream URL directly via proxy.
         
-        const encrypted = encrypt(info.streamUrl);
+        const encrypted = encrypt(JSON.stringify({
+            url: info.streamUrl,
+            headers: {
+                'Cookie': info.cookies.join('; '),
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+                'Referer': 'https://www.dailymotion.com/'
+            }
+        }));
         const resultUrl = `${origin}/api/media/${encrypted}`;
 
         const finalData = {

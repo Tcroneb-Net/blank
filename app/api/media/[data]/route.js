@@ -13,30 +13,31 @@ export async function GET(req, { params }) {
 
     try {
         // 1. Decrypt URL Target
-        const targetUrl = decrypt(data);
+        const decrypted = decrypt(data);
+        let targetUrl = '';
+        let requestHeaders = {
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
+        };
+
+        try {
+            const parsed = JSON.parse(decrypted);
+            targetUrl = parsed.url;
+            if (parsed.headers) {
+                requestHeaders = { ...requestHeaders, ...parsed.headers };
+            }
+        } catch (e) {
+            targetUrl = decrypted;
+        }
         
         if (!targetUrl || !targetUrl.startsWith('http')) {
              return new NextResponse('Invalid or Corrupted Token', { status: 400 });
         }
 
-        // 2. Security Check (DISABLED)
-        // Domain restriction dinonaktifkan agar media dari host eksternal (seperti output Brat/Vheer yang mungkin beda domain) tetap bisa diakses.
-        /* 
-        const urlObj = new URL(targetUrl);
-        const allowedDomains = ['puruh2o-backend.hf.space', 'puruh2o-gabutcok.hf.space'];
-        
-        if (!allowedDomains.includes(urlObj.hostname)) {
-             return new NextResponse('Forbidden: Access to this domain is restricted.', { status: 403 });
-        }
-        */
-
         // 3. Proxy Request: Fetch konten dari backend
         const response = await axios.get(targetUrl, {
             responseType: 'stream',
             timeout: 30000,
-            headers: {
-                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
-            }
+            headers: requestHeaders
         });
 
         // 4. Return Stream ke Client
