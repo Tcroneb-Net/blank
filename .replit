@@ -48,3 +48,12 @@ waitForPort = 5000
 
 [workflows.workflow.metadata]
 outputType = "webview"
+
+[[workflows.workflow]]
+name = "Hapus folder kosong"
+mode = "sequential"
+author = 48309077
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "find . -type d -empty -delete"

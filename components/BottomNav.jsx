@@ -1,7 +1,7 @@
 'use client';
 import React from 'react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useSearchParams } from 'next/navigation';
 
 const NavItem = ({ to, icon, label }) => {
     const pathname = usePathname();
@@ -22,9 +22,14 @@ const NavItem = ({ to, icon, label }) => {
 
 const BottomNav = () => {
     const pathname = usePathname();
+    const searchParams = useSearchParams();
 
-    // Sembunyikan navigasi bawah pada halaman chat agar tampilan lebih luas/mirip aplikasi native
-    if (pathname === '/chat') return null;
+    // Sembunyikan navigasi bawah pada:
+    // 1. Halaman Chat
+    // 2. Halaman Docs Detail (saat ada parameter ?endpoint=...)
+    const isDocsDetail = pathname === '/docs' && searchParams.has('endpoint');
+
+    if (pathname === '/chat' || isDocsDetail) return null;
 
     return (
         <nav className="fixed bottom-0 left-0 right-0 h-20 bg-card/80 backdrop-blur-lg border-t border-default z-50 md:hidden flex items-center justify-around shadow-2xl shadow-black">
