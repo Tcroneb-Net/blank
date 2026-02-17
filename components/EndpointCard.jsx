@@ -4,8 +4,8 @@ import MethodBadge from './MethodBadge';
 import CopyButton from './CopyButton';
 import InfoModal from './InfoModal';
 
-const EndpointCard = ({ endpoint, baseUrl, slug, isInitialOpen = false }) => {
-    const [isOpen, setIsOpen] = useState(isInitialOpen);
+const EndpointCard = ({ endpoint, baseUrl }) => {
+    const [isOpen, setIsOpen] = useState(false);
     const [activeTab, setActiveTab] = useState('params'); 
     const [isLoading, setIsLoading] = useState(false);
     const [finalData, setFinalData] = useState(null);
@@ -14,30 +14,6 @@ const EndpointCard = ({ endpoint, baseUrl, slug, isInitialOpen = false }) => {
     
     const formRef = useRef(null);
     const fullUrl = `${baseUrl}${endpoint.path}`;
-
-    // Update isOpen if isInitialOpen prop changes (e.g. via deep link scroll)
-    useEffect(() => {
-        if (isInitialOpen) setIsOpen(true);
-    }, [isInitialOpen]);
-
-    const handleShare = (e) => {
-        e.stopPropagation();
-        const shareUrl = `${baseUrl}/docs?endpoint=${slug}`;
-        
-        if (navigator.share) {
-            navigator.share({
-                title: endpoint.title || 'PuruBoy API Endpoint',
-                text: `Cek endpoint ini: ${endpoint.path}`,
-                url: shareUrl,
-            }).catch(console.error);
-        } else {
-            navigator.clipboard.writeText(shareUrl).then(() => {
-                alert('Link endpoint berhasil disalin!');
-            }).catch(() => {
-                prompt("Salin link ini:", shareUrl);
-            });
-        }
-    };
 
     const handleTryItOut = async (e) => {
         e.preventDefault();
@@ -58,7 +34,7 @@ const EndpointCard = ({ endpoint, baseUrl, slug, isInitialOpen = false }) => {
                 if (param.in === 'query') queryParams.append(param.name, value);
                 else if (param.in === 'formData') {
                     isMultipart = true;
-                    formPayload.append(param.name, value);
+                    formPayload.append(param.name, value); // Value di sini bisa berupa File object
                 }
                 else if (param.in === 'body') {
                     try {
@@ -80,6 +56,7 @@ const EndpointCard = ({ endpoint, baseUrl, slug, isInitialOpen = false }) => {
         const fetchOptions = { method: endpoint.method, headers: {} };
         
         if (isMultipart) {
+            // Browser akan otomatis set Content-Type: multipart/form-data dengan boundary yang benar
             fetchOptions.body = formPayload;
         } else if (Object.keys(bodyParams).length > 0) {
             fetchOptions.headers['Content-Type'] = 'application/json';
@@ -203,10 +180,10 @@ const EndpointCard = ({ endpoint, baseUrl, slug, isInitialOpen = false }) => {
 
     return (
         <>
-            <div className={`native-card mb-4 overflow-hidden rounded-2xl transition-all duration-300 ${isInitialOpen ? 'ring-2 ring-accent shadow-lg shadow-accent/10' : ''}`} id={slug}>
+            <div className="native-card mb-4 overflow-hidden rounded-2xl">
                 <div 
                     onClick={() => setIsOpen(!isOpen)}
-                    className="p-4 flex items-center justify-between cursor-pointer active:bg-white/5 transition-colors relative"
+                    className="p-4 flex items-center justify-between cursor-pointer active:bg-white/5 transition-colors"
                 >
                     <div className="flex items-center gap-3 overflow-hidden">
                         <MethodBadge method={endpoint.method} />
@@ -216,17 +193,10 @@ const EndpointCard = ({ endpoint, baseUrl, slug, isInitialOpen = false }) => {
                         </div>
                     </div>
                     <div className="flex items-center gap-3 ml-2">
-                        <button 
-                            onClick={handleShare}
-                            className="w-8 h-8 flex items-center justify-center rounded-full bg-input text-muted hover:text-accent hover:bg-accent/10 transition-colors z-10"
-                            title="Bagikan Endpoint"
-                        >
-                            <i className="fas fa-share-alt text-xs"></i>
-                        </button>
-                        {endpoint.description && (
+                         {endpoint.description && (
                             <button 
                                 onClick={(e) => { e.stopPropagation(); setIsInfoOpen(true); }}
-                                className="w-8 h-8 flex items-center justify-center rounded-full bg-input text-muted hover:text-white transition-colors z-10"
+                                className="w-8 h-8 flex items-center justify-center rounded-full bg-input text-muted hover:text-white transition-colors"
                             >
                                 <i className="fas fa-info text-xs"></i>
                             </button>
@@ -235,8 +205,8 @@ const EndpointCard = ({ endpoint, baseUrl, slug, isInitialOpen = false }) => {
                     </div>
                 </div>
 
-                {isOpen && (
-                    <div className="animate-fade-in">
+                <div className={`grid transition-[grid-template-rows] duration-300 ease-in-out ${isOpen ? 'grid-rows-[1fr]' : 'grid-rows-[0fr]'}`}>
+                    <div className="overflow-hidden">
                         <div className="border-t border-default">
                             <div className="flex border-b border-default bg-black/10">
                                 {['params', 'example', 'response'].map(tab => (
@@ -381,7 +351,7 @@ const EndpointCard = ({ endpoint, baseUrl, slug, isInitialOpen = false }) => {
                             </div>
                         </div>
                     </div>
-                )}
+                </div>
             </div>
 
             <InfoModal isOpen={isInfoOpen} onClose={() => setIsInfoOpen(false)} title="Detail Endpoint">
@@ -400,14 +370,6 @@ const EndpointCard = ({ endpoint, baseUrl, slug, isInitialOpen = false }) => {
                         <div className="bg-black/50 p-3 rounded-xl border border-default flex items-center justify-between gap-2">
                             <code className="text-xs font-mono text-accent break-all line-clamp-2">{fullUrl}</code>
                             <CopyButton textToCopy={fullUrl} />
-                        </div>
-                    </div>
-                    {/* Unique Code Info */}
-                    <div>
-                        <h4 className="text-xs font-bold text-muted uppercase tracking-wide mb-2">Unique Code</h4>
-                        <div className="bg-black/50 p-3 rounded-xl border border-default flex items-center justify-between gap-2">
-                            <code className="text-xs font-mono text-gray-400">{slug}</code>
-                            <CopyButton textToCopy={slug} />
                         </div>
                     </div>
                 </div>

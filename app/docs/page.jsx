@@ -1,4 +1,4 @@
-import React, { Suspense } from 'react';
+import React from 'react';
 import { getDocsSpec } from '../../lib/docsService';
 import DocsClient from '../../components/DocsClient';
 
@@ -30,9 +30,5 @@ export default async function DocsPage() {
         );
     }
 
-    return (
-        <Suspense fallback={<div className="p-10 text-center text-gray-500">Loading documentation...</div>}>
-            <DocsClient apiSpec={apiSpec} />
-        </Suspense>
-    );
+    return <DocsClient apiSpec={apiSpec} />;
 }
