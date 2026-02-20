@@ -208,21 +208,24 @@ const EndpointCard = ({ endpoint, baseUrl, id, isHighlighted, onExpand }) => {
                         </div>
                     </div>
                     <div className="flex items-center gap-3 ml-2">
-                        {/* Share Button Wrapper Changed to Div to avoid button nesting */}
-                        <div 
-                            onClick={(e) => { e.stopPropagation(); }}
-                            className="group/share relative w-8 h-8 flex items-center justify-center rounded-full bg-input text-muted hover:text-white transition-colors"
-                        >
-                            <CopyButton textToCopy={shareUrl} iconOnly />
-                        </div>
+                        {isOpen && (
+                            <>
+                                <div 
+                                    onClick={(e) => { e.stopPropagation(); }}
+                                    className="group/share relative w-8 h-8 flex items-center justify-center rounded-full bg-input text-muted hover:text-white transition-colors animate-fade-in"
+                                >
+                                    <CopyButton textToCopy={shareUrl} iconOnly />
+                                </div>
 
-                         {endpoint.description && (
-                            <button 
-                                onClick={(e) => { e.stopPropagation(); setIsInfoOpen(true); }}
-                                className="w-8 h-8 flex items-center justify-center rounded-full bg-input text-muted hover:text-white transition-colors"
-                            >
-                                <i className="fas fa-info text-xs"></i>
-                            </button>
+                                {endpoint.description && (
+                                    <button 
+                                        onClick={(e) => { e.stopPropagation(); setIsInfoOpen(true); }}
+                                        className="w-8 h-8 flex items-center justify-center rounded-full bg-input text-muted hover:text-white transition-colors animate-fade-in"
+                                    >
+                                        <i className="fas fa-info text-xs"></i>
+                                    </button>
+                                )}
+                            </>
                         )}
                         <i className={`fas fa-chevron-down text-muted transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`}></i>
                     </div>
