@@ -10,13 +10,13 @@ const EndpointCard = ({ endpoint, baseUrl, id, isHighlighted, onExpand, selectio
     const [isLoading, setIsLoading] = useState(false);
     const [finalData, setFinalData] = useState(null);
     const [isInfoOpen, setIsInfoOpen] = useState(false);
+    const [codeFormat, setCodeFormat] = useState('js'); // State untuk tab Example (js/curl)
     const [formValues, setFormValues] = useState({});
     
     const formRef = useRef(null);
     const fullUrl = `${baseUrl}${endpoint.path}`;
     const hasAutoFill = !!endpoint.example;
 
-    // Handle external expand request (e.g. from shared URL)
     useEffect(() => {
         if (isHighlighted) {
             setIsOpen(true);
@@ -32,7 +32,7 @@ const EndpointCard = ({ endpoint, baseUrl, id, isHighlighted, onExpand, selectio
         const formData = new FormData(formRef.current);
         const queryParams = new URLSearchParams();
         const bodyParams = {};
-        const formPayload = new FormData(); // Untuk multipart/form-data
+        const formPayload = new FormData(); 
         let isMultipart = false;
         let path = endpoint.path;
 
@@ -42,7 +42,7 @@ const EndpointCard = ({ endpoint, baseUrl, id, isHighlighted, onExpand, selectio
                 if (param.in === 'query') queryParams.append(param.name, value);
                 else if (param.in === 'formData') {
                     isMultipart = true;
-                    formPayload.append(param.name, value); // Value di sini bisa berupa File object
+                    formPayload.append(param.name, value); 
                 }
                 else if (param.in === 'body') {
                     try {
@@ -64,7 +64,6 @@ const EndpointCard = ({ endpoint, baseUrl, id, isHighlighted, onExpand, selectio
         const fetchOptions = { method: endpoint.method, headers: {} };
         
         if (isMultipart) {
-            // Browser akan otomatis set Content-Type: multipart/form-data dengan boundary yang benar
             fetchOptions.body = formPayload;
         } else if (Object.keys(bodyParams).length > 0) {
             fetchOptions.headers['Content-Type'] = 'application/json';
@@ -134,9 +133,7 @@ const EndpointCard = ({ endpoint, baseUrl, id, isHighlighted, onExpand, selectio
                 } catch (e) {
                     try {
                         parsedBody = new Function(`return ${bodyStr}`)();
-                    } catch (evalErr) {
-                        console.error("Auto fill body eval error", evalErr);
-                    }
+                    } catch (evalErr) {}
                 }
 
                 const processedValues = {};
@@ -164,9 +161,7 @@ const EndpointCard = ({ endpoint, baseUrl, id, isHighlighted, onExpand, selectio
                     setFormValues(prev => ({ ...prev, ...newValues }));
                 }
             }
-        } catch (e) {
-            console.error("Auto fill parsing error", e);
-        }
+        } catch (e) {}
     };
 
     const handleInputChange = (e) => {
@@ -174,19 +169,107 @@ const EndpointCard = ({ endpoint, baseUrl, id, isHighlighted, onExpand, selectio
         setFormValues(prev => ({ ...prev, [name]: value }));
     };
 
+    const getGeneratedCurl = () => {
+        let path = endpoint.path;
+        const queryParams = new URLSearchParams();
+        const bodyParams = {};
+        let isMultipart = false;
+
+        let defaultValues = {};
+        if (endpoint.example) {
+            const jsonMatch = endpoint.example.match(/body:\s*JSON\.stringify\(([\s\S]*?)\)/);
+            if (jsonMatch) {
+                try { defaultValues = new Function(`return ${jsonMatch[1]}`)() || {}; } catch(e) {}
+            }
+            const urlMatch = endpoint.example.match(/fetch\(['"`](.*?)['"`]/);
+            if (urlMatch) {
+                const urlParts = urlMatch[1].split('?');
+                if (urlParts.length > 1) {
+                    const params = new URLSearchParams(urlParts[1]);
+                    params.forEach((val, key) => { defaultValues[key] = val; });
+                }
+            }
+        }
+
+        endpoint.params.forEach(param => {
+            let val = formValues[param.name];
+            if (val === undefined || val === '') val = defaultValues[param.name];
+            
+            if (param.in === 'query') {
+                if (val !== undefined && val !== '') {
+                    queryParams.append(param.name, val);
+                } else if (param.required) {
+                    queryParams.append(param.name, `<${param.name}>`);
+                }
+            } else if (param.in === 'path') {
+                path = path.replace(`:${param.name}`, (val !== undefined && val !== '') ? encodeURIComponent(val) : `<${param.name}>`);
+            } else if (param.in === 'formData') {
+                isMultipart = true;
+            } else if (param.in === 'body') {
+                if (val !== undefined && val !== '') {
+                    try {
+                        const trimmed = typeof val === 'string' ? val.trim() : val;
+                        if (typeof trimmed === 'string' && ((trimmed.startsWith('{') && trimmed.endsWith('}')) || (trimmed.startsWith('[') && trimmed.endsWith(']')))) {
+                            bodyParams[param.name] = JSON.parse(trimmed);
+                        } else {
+                            bodyParams[param.name] = val;
+                        }
+                    } catch (e) {
+                        bodyParams[param.name] = val;
+                    }
+                } else if (param.required) {
+                    bodyParams[param.name] = `<${param.name}>`;
+                }
+            }
+        });
+
+        if (Object.keys(bodyParams).length === 0 && endpoint.example && ['POST', 'PUT', 'PATCH'].includes(endpoint.method)) {
+            Object.keys(defaultValues).forEach(k => {
+                if (!queryParams.has(k) && !path.includes(k) && !isMultipart) {
+                    bodyParams[k] = defaultValues[k];
+                }
+            });
+        }
+
+        const queryString = queryParams.toString();
+        const finalUrl = `${baseUrl}${path}${queryString ? '?' + decodeURIComponent(queryString) : ''}`;
+        
+        let curl = `curl -X ${endpoint.method} "${finalUrl}"`;
+
+        if (isMultipart) {
+             endpoint.params.filter(p => p.in === 'formData').forEach(p => {
+                 let val = formValues[p.name];
+                 if (val === undefined || val === '') val = defaultValues[p.name];
+
+                 if (p.type === 'file') {
+                     let displayVal = '<path_to_file>';
+                     if (val) displayVal = val.replace(/C:\\fakepath\\/i, '');
+                     curl += ` \\\n  -F "${p.name}=@${displayVal}"`;
+                 } else {
+                     curl += ` \\\n  -F "${p.name}=${val || `<${p.name}>`}"`;
+                 }
+             });
+        } else if (Object.keys(bodyParams).length > 0) {
+             curl += ` \\\n  -H "Content-Type: application/json"`;
+             curl += ` \\\n  -d '${JSON.stringify(bodyParams, null, 2)}'`;
+        }
+
+        return curl;
+    };
+
     useEffect(() => {
         if (isOpen && window.hljs) {
             if (activeTab === 'example' || (activeTab === 'response' && finalData?.data && !finalData.isStream)) {
                 setTimeout(() => {
                     document.querySelectorAll('pre code').forEach((block) => {
+                        delete block.dataset.highlighted;
                         window.hljs.highlightElement(block);
                     });
                 }, 10);
             }
         }
-    }, [isOpen, activeTab, finalData?.data, finalData?.isStream]);
+    }, [isOpen, activeTab, codeFormat, finalData?.data, finalData?.isStream, formValues]);
 
-    // Generate Share URL
     const shareUrl = typeof window !== 'undefined' 
         ? `${window.location.origin}/docs?endpoint=${encodeURIComponent(endpoint.path)}`
         : '';
@@ -337,15 +420,47 @@ const EndpointCard = ({ endpoint, baseUrl, id, isHighlighted, onExpand, selectio
                                 )}
 
                                 {activeTab === 'example' && (
-                                    <div className="relative group animate-fade-in">
-                                        <pre className="bg-code p-4 rounded-xl overflow-x-auto text-xs border border-default custom-scrollbar">
-                                            <code className="language-javascript font-mono">
-                                                {endpoint.example ? endpoint.example.replace(/fetch\(['"](.*?)['"]/g, `fetch('${baseUrl}$1'`) : '// Tidak ada contoh tersedia'}
-                                            </code>
-                                        </pre>
-                                        {endpoint.example && (
-                                            <div className="absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity">
-                                                <CopyButton textToCopy={endpoint.example.replace(/fetch\(['"](.*?)['"]/g, `fetch('${baseUrl}$1'`)} />
+                                    <div className="animate-fade-in">
+                                        <div className="flex justify-end mb-3 gap-2">
+                                            <button 
+                                                type="button" 
+                                                onClick={() => setCodeFormat('js')}
+                                                className={`text-[10px] font-bold px-3 py-1.5 rounded-lg transition-all shadow-sm ${codeFormat === 'js' ? 'bg-accent text-white shadow-accent/20' : 'bg-input border border-default text-gray-400 hover:text-white hover:border-accent/50'}`}
+                                            >
+                                                <i className="fab fa-js mr-1"></i> Fetch (JS)
+                                            </button>
+                                            <button 
+                                                type="button" 
+                                                onClick={() => setCodeFormat('curl')}
+                                                className={`text-[10px] font-bold px-3 py-1.5 rounded-lg transition-all shadow-sm ${codeFormat === 'curl' ? 'bg-accent text-white shadow-accent/20' : 'bg-input border border-default text-gray-400 hover:text-white hover:border-accent/50'}`}
+                                            >
+                                                <i className="fas fa-terminal mr-1"></i> cURL
+                                            </button>
+                                        </div>
+
+                                        {codeFormat === 'js' ? (
+                                            <div className="relative group">
+                                                <pre className="bg-code p-4 rounded-xl overflow-x-auto text-xs border border-default custom-scrollbar shadow-inner">
+                                                    <code className="language-javascript font-mono">
+                                                        {endpoint.example ? endpoint.example.replace(/fetch\(['"](.*?)['"]/g, `fetch('${baseUrl}$1'`) : '// Tidak ada contoh tersedia'}
+                                                    </code>
+                                                </pre>
+                                                {endpoint.example && (
+                                                    <div className="absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity">
+                                                        <CopyButton textToCopy={endpoint.example.replace(/fetch\(['"](.*?)['"]/g, `fetch('${baseUrl}$1'`)} />
+                                                    </div>
+                                                )}
+                                            </div>
+                                        ) : (
+                                            <div className="relative group">
+                                                <pre className="bg-code p-4 rounded-xl overflow-x-auto text-xs border border-default custom-scrollbar shadow-inner">
+                                                    <code className="language-bash font-mono whitespace-pre-wrap break-all">
+                                                        {getGeneratedCurl()}
+                                                    </code>
+                                                </pre>
+                                                <div className="absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity">
+                                                    <CopyButton textToCopy={getGeneratedCurl()} />
+                                                </div>
                                             </div>
                                         )}
                                     </div>

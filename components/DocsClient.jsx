@@ -367,7 +367,7 @@ export default function DocsClient({ apiSpec }) {
                         </div>
                         <button 
                             onClick={toggleSelectionMode}
-                            className={`text-[10px] font-bold px-2.5 py-1 rounded-lg transition-colors border ${selectionMode ? 'bg-accent text-white border-accent' : 'bg-transparent text-accent border-accent/50 hover:bg-accent/10'}`}
+                            className={`text-[10px] font-bold px-2.5 py-1 rounded-lg transition-colors border ${selectionMode ? 'bg-blue-600 text-white border-blue-600 hover:bg-blue-700' : 'bg-transparent text-accent border-accent/50 hover:bg-accent/10'}`}
                         >
                             <i className={`fas ${selectionMode ? 'fa-times' : 'fa-list-check'} mr-1`}></i> 
                             {selectionMode ? 'Cancel Context' : 'To Context'}
