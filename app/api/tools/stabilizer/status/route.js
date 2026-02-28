@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import stabilizer from '../../../../lib/stabilizer';
+import stabilizer from '../../../../../lib/stabilizer';
 
 export const dynamic = 'force-dynamic';
 
