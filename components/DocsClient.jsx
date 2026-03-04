@@ -201,13 +201,11 @@ export default function DocsClient({ apiSpec }) {
                 let queryParams = new URLSearchParams();
 
                 const requiredParams = ep.params ? ep.params.filter(p => p.required) : [];
-                const needsManualInput = requiredParams.length > 0 && !ep.example;
+                const needsManualInput = (requiredParams.length > 0 && !ep.example) || ep.path.includes('/imgbb');
 
                 if (needsManualInput) {
-                    // Trigger manual input prompt and wait for user submission
                     const userInputs = await requestManualInput(ep);
 
-                    // Process manual inputs
                     ep.params.forEach(param => {
                         const val = userInputs[param.name];
                         if (val !== undefined && val !== null && val !== '') {
@@ -234,16 +232,15 @@ export default function DocsClient({ apiSpec }) {
                     });
 
                     if (queryParams.toString()) {
-                        pathWithQuery += '?' + queryParams.toString();
+                        pathWithQuery += (pathWithQuery.includes('?') ? '&' : '?') + queryParams.toString();
                     }
 
                 } else if (ep.example) {
-                    // Parse example string for auto-fill context
                     const urlMatch = ep.example.match(/fetch\(['"`](.*?)['"`]/);
                     if (urlMatch) {
                         const urlParts = urlMatch[1].split('?');
                         if (urlParts.length > 1) {
-                            pathWithQuery += '?' + urlParts[1];
+                            pathWithQuery += (pathWithQuery.includes('?') ? '&' : '?') + urlParts[1];
                         }
                     }
 
@@ -270,13 +267,49 @@ export default function DocsClient({ apiSpec }) {
                     fetchOptions.body = JSON.stringify(bodyParams);
                 }
 
-                const res = await fetch(finalUrl, fetchOptions);
+                let res = await fetch(finalUrl, fetchOptions);
                 const contentType = res.headers.get("content-type") || "";
                 let responseData = "";
 
                 if (contentType.includes("application/json")) {
-                    const json = await res.json();
-                    responseData = JSON.stringify(json, null, 2);
+                    let json = await res.json();
+                    
+                    // Polling Logic
+                    if (json.status === 'queued' && json.pollingUrl) {
+                        // Capture the original JSON response containing the polling URL
+                        const initialResponse = JSON.parse(JSON.stringify(json));
+                        
+                        let isPolling = true;
+                        let attempts = 0;
+                        const maxAttempts = 40;
+                        
+                        while (isPolling && attempts < maxAttempts) {
+                            attempts++;
+                            await new Promise(r => setTimeout(r, 3000));
+                            const pollRes = await fetch(json.pollingUrl);
+                            if (pollRes.ok) {
+                                const pollJson = await pollRes.json();
+                                const pollResult = pollJson.result || pollJson;
+                                
+                                if (pollResult.status === 'success' || pollResult.status === 'completed') {
+                                    json = pollJson;
+                                    isPolling = false;
+                                } else if (pollResult.status === 'error' || pollResult.status === 'failed') {
+                                    json = pollJson;
+                                    isPolling = false;
+                                    errors.push(`[${ep.path}] Polling failed: ${pollResult.message || 'Unknown error'}`);
+                                }
+                            } else {
+                                isPolling = false;
+                                errors.push(`[${ep.path}] Polling server returned ${pollRes.status}`);
+                            }
+                        }
+                        
+                        // Sertakan json asli yang mengembalikan polling url
+                        responseData = `Initial Response (Polling Started):\n${JSON.stringify(initialResponse, null, 2)}\n\nFinal Result (After Polling):\n${JSON.stringify(json, null, 2)}`;
+                    } else {
+                        responseData = JSON.stringify(json, null, 2);
+                    }
                 } else if (res.body) {
                     const reader = res.body.getReader();
                     const decoder = new TextDecoder();
@@ -286,7 +319,29 @@ export default function DocsClient({ apiSpec }) {
                         if (done) break;
                         streamText += decoder.decode(value, { stream: true });
                     }
-                    responseData = streamText;
+                    
+                    const trueMatch = streamText.match(/\[true\]\s+(https?:\/\/\S+)/);
+                    const falseMatch = streamText.match(/\[false\]\s+([\s\S]+)/);
+
+                    if (trueMatch) {
+                        const resultUrl = trueMatch[1];
+                        try {
+                            const subRes = await fetch(resultUrl);
+                            const subContentType = subRes.headers.get("content-type") || "";
+                            if (subContentType.includes("application/json")) {
+                                const subJson = await subRes.json();
+                                responseData = `Logs:\n${streamText}\n\nResult (JSON):\n${JSON.stringify(subJson, null, 2)}`;
+                            } else {
+                                responseData = `Logs:\n${streamText}\n\nResult URL: ${resultUrl}`;
+                            }
+                        } catch (e) {
+                            responseData = `Logs:\n${streamText}\n\nResult URL: ${resultUrl}\n(Failed to fetch JSON metadata)`;
+                        }
+                    } else if (falseMatch) {
+                        responseData = `Logs:\n${streamText}\n\nResult: Failed\nMessage: ${falseMatch[1]}`;
+                    } else {
+                        responseData = streamText;
+                    }
                 } else {
                     responseData = await res.text();
                 }
@@ -520,7 +575,7 @@ export default function DocsClient({ apiSpec }) {
                     <div className="space-y-4">
                         <div className="bg-yellow-900/20 border border-yellow-700/50 p-3 rounded-xl text-yellow-500 text-xs leading-relaxed">
                             <i className="fas fa-exclamation-triangle mr-2"></i>
-                            Endpoint <strong className="font-mono text-white">{manualInputState.endpoint.path}</strong> tidak memiliki autofill dan ada payload wajib yang perlu diisi. Silakan masukkan input di bawah untuk melanjutkan proses context.
+                            Endpoint <strong className="font-mono text-white">{manualInputState.endpoint.path}</strong> memerlukan input payload manual untuk melanjutkan proses context.
                         </div>
                         <form onSubmit={handleManualSubmit} className="space-y-4">
                             {manualInputState.endpoint.params.map(param => (
