@@ -1,15 +1,14 @@
 import { NextResponse } from 'next/server';
-import blackboxController from '../../../../lib/controllers/ai/blackbox';
+import geminiV2Controller from '../../../../lib/controllers/ai/geminiV2';
 
 export const runtime = 'nodejs';
-export const maxDuration = 60;
 
 export async function POST(req) {
     try {
         const body = await req.json();
         const mockReq = { body };
         
-        const result = await blackboxController(mockReq);
+        const result = await geminiV2Controller(mockReq);
         return NextResponse.json(result);
     } catch (error) {
         return NextResponse.json({ 
