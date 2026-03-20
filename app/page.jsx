@@ -162,6 +162,7 @@ export default async function HomePage() {
                         { href: '/docs', icon: 'fa-book', label: 'Dokumentasi', desc: 'Lihat semua endpoint', color: 'from-pink-600 to-rose-600' },
                         { href: '/chat', icon: 'fa-comments', label: 'Chat Room', desc: 'Ngobrol realtime', color: 'from-blue-600 to-indigo-600' },
                         { href: '/blog', icon: 'fa-newspaper', label: 'Blog', desc: 'Update & berita', color: 'from-purple-600 to-violet-600' },
+                        { href: '/listpage', icon: 'fa-file-alt', label: 'List Page', desc: 'Daftar custom page', color: 'from-emerald-500 to-teal-600' },
                         { href: '/fastupdate', icon: 'fa-bolt', label: 'Fast Update', desc: 'Deploy via AI', color: 'from-amber-500 to-orange-500' },
                     ].map(item => (
                         <Link key={item.href} href={item.href} className="native-card p-4 flex flex-col gap-2 hover:border-accent/40 transition-all active:scale-95 group">
@@ -175,6 +176,17 @@ export default async function HomePage() {
                         </Link>
                     ))}
                 </div>
+            </div>
+
+            {/* Features */}
+            <h2 className="text-sm font-bold text-primary mb-3 px-1 flex items-center gap-2 uppercase tracking-wider">
+                <i className="fas fa-star text-accent text-xs"></i> Fitur Unggulan
+            </h2>
+            <div className="space-y-3 mb-8">
+                <FeatureItem icon="fa-bolt" title="High Performance" badge="Fast" desc="Infrastruktur server yang dioptimalkan untuk respons cepat dan stabil dengan uptime tinggi." />
+                <FeatureItem icon="fa-mobile-alt" title="Mobile Friendly" desc="Dokumentasi yang didesain nyaman untuk layar kecil, scroll smooth, dan tap responsive." />
+                <FeatureItem icon="fa-flask" title="API Tester" badge="New" desc="Coba endpoint langsung dari browser tanpa aplikasi tambahan. Hasil real-time." />
+                <FeatureItem icon="fa-robot" title="AI Powered" desc="Beberapa endpoint menggunakan model AI terbaru untuk hasil yang lebih akurat dan canggih." />
             </div>
 
             {/* Contributors */}
@@ -265,17 +277,6 @@ export default async function HomePage() {
                         <span className="text-[9px] bg-blue-500/10 text-blue-400 px-2 py-1 rounded-full font-bold uppercase tracking-wider border border-blue-500/20">Cloud</span>
                     </a>
                 </div>
-            </div>
-
-            {/* Features */}
-            <h2 className="text-sm font-bold text-primary mb-3 px-1 flex items-center gap-2 uppercase tracking-wider">
-                <i className="fas fa-star text-accent text-xs"></i> Fitur Unggulan
-            </h2>
-            <div className="space-y-3">
-                <FeatureItem icon="fa-bolt" title="High Performance" badge="Fast" desc="Infrastruktur server yang dioptimalkan untuk respons cepat dan stabil dengan uptime tinggi." />
-                <FeatureItem icon="fa-mobile-alt" title="Mobile Friendly" desc="Dokumentasi yang didesain nyaman untuk layar kecil, scroll smooth, dan tap responsive." />
-                <FeatureItem icon="fa-flask" title="API Tester" badge="New" desc="Coba endpoint langsung dari browser tanpa aplikasi tambahan. Hasil real-time." />
-                <FeatureItem icon="fa-robot" title="AI Powered" desc="Beberapa endpoint menggunakan model AI terbaru untuk hasil yang lebih akurat dan canggih." />
             </div>
 
             {/* Footer CTA */}
