@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import donghuaSearchController from '../../../../../lib/controllers/anime/donghuaSearch';
+import anichinStreamController from '../../../../../lib/controllers/anime/anichinStream';
 
 export const dynamic = 'force-dynamic';
 
@@ -11,7 +11,7 @@ export async function GET(req) {
         
         const mockReq = { query, origin };
         
-        const result = await donghuaSearchController(mockReq);
+        const result = await anichinStreamController(mockReq);
         return NextResponse.json(result);
     } catch (error) {
         return NextResponse.json({ 

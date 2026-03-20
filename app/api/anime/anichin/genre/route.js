@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import donghuaHomeController from '../../../../../lib/controllers/anime/donghuaHome';
+import anichinGenreController from '../../../../../lib/controllers/anime/anichinGenre';
 
 export const dynamic = 'force-dynamic';
 
@@ -11,7 +11,7 @@ export async function GET(req) {
         
         const mockReq = { query, origin };
         
-        const result = await donghuaHomeController(mockReq);
+        const result = await anichinGenreController(mockReq);
         return NextResponse.json(result);
     } catch (error) {
         return NextResponse.json({ 

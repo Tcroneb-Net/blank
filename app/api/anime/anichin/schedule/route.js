@@ -1,17 +1,14 @@
 import { NextResponse } from 'next/server';
-import donghuaStreamController from '../../../../../lib/controllers/anime/donghuaStream';
+import anichinScheduleController from '../../../../../lib/controllers/anime/anichinSchedule';
 
 export const dynamic = 'force-dynamic';
 
 export async function GET(req) {
     try {
-        const { searchParams } = new URL(req.url);
-        const query = Object.fromEntries(searchParams);
         const origin = new URL(req.url).origin;
+        const mockReq = { origin };
         
-        const mockReq = { query, origin };
-        
-        const result = await donghuaStreamController(mockReq);
+        const result = await anichinScheduleController(mockReq);
         return NextResponse.json(result);
     } catch (error) {
         return NextResponse.json({ 
