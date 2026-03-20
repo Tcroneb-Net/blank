@@ -696,12 +696,9 @@
                 slug = title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
             }
             
-            // Simple minify
-            const htmlMin = htmlRaw.split('\n').map(l => l.trim()).join(' ').replace(/>\s+</g, '><');
-            
-            // Inject meta
+            // Inject meta (No Minification)
             const meta = JSON.stringify({ title, desc, date: new Date().toISOString() });
-            const finalHtml = `<!-- META ${meta} -->\n${htmlMin}`;
+            const finalHtml = `<!-- META ${meta} -->\n${htmlRaw}`;
 
             const repo = localStorage.getItem(GH_REPO_KEY);
             const token = localStorage.getItem(GH_TOKEN_KEY);

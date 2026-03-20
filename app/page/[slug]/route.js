@@ -16,11 +16,13 @@ export async function GET(req, { params }) {
         if (ghRes.ok) {
             const html = await ghRes.text();
             
-            // Return HTML with Cache-Control headers for browser and Edge caching
+            // Return HTML with Cache-Control headers to prevent any caching
             return new NextResponse(html, {
                 headers: { 
                     'Content-Type': 'text/html',
-                    'Cache-Control': 'public, max-age=3600, stale-while-revalidate=600',
+                    'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
+                    'Pragma': 'no-cache',
+                    'Expires': '0',
                     'X-Source': 'GitHub-Remote'
                 }
             });
