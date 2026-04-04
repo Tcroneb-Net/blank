@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import instagramVideoController from '../../../../../lib/controllers/downloader/instagramVideo';
+import instagramController from '../../../../../lib/controllers/downloader/instagram';
 
 export const dynamic = 'force-dynamic';
 
@@ -8,7 +8,7 @@ export async function POST(req) {
         const body = await req.json();
         const mockReq = { body };
         
-        const result = await instagramVideoController(mockReq);
+        const result = await instagramController(mockReq);
         return NextResponse.json(result);
     } catch (error) {
         return NextResponse.json({ 
