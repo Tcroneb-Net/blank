@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import instagramController from '../../../../../lib/controllers/downloader/instagram';
+import instagramController from '../../../../lib/controllers/downloader/instagram';
 
 export const dynamic = 'force-dynamic';
 
