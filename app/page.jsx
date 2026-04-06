@@ -1,10 +1,14 @@
-import React from "react";
+import React from 'react';
+import Link from 'next/link';
+import Image from 'next/image';
+import { getDocsSpec } from '../lib/docsService';
+
+export const revalidate = 3600;
 
 export const metadata = {
-  title: "Access Restricted",
-  description: "Redirect to Hostify",
+    title: 'Hostify API - Home',
+    description: 'Hostify_Tech.',
 };
-
 export default function HomePage() {
   return (
     <div className="min-h-screen bg-white flex items-center justify-center px-6">
