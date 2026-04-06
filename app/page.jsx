@@ -1,5 +1,4 @@
 import React from "react";
-import Link from "next/link";
 
 export const metadata = {
   title: "Access Restricted",
@@ -12,7 +11,7 @@ export default function HomePage() {
       <div className="text-center max-w-md">
 
         <h1 className="text-3xl font-bold text-gray-900 mb-3">
-          🚫 You're not supposed to be here
+          🚫 You are not supposed to be here
         </h1>
 
         <p className="text-gray-600 mb-6">
