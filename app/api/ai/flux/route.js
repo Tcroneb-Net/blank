@@ -38,7 +38,7 @@ export async function POST(req) {
         (async () => {
             let keepAliveInterval;
             try {
-                await send(`Memulai generasi gambar Flux untuk: "${prompt}"...\n`);
+                await send(`Menghubungkan ke Engine GraduallyAI...\nGenerating: "${prompt}"\n`);
 
                 // Timer untuk mengirim fakta setiap 2 detik agar koneksi tidak putus
                 keepAliveInterval = setInterval(() => {
@@ -51,11 +51,16 @@ export async function POST(req) {
                 clearInterval(keepAliveInterval);
 
                 if (result.success) {
+                    // Pastikan URL di result memiliki origin lengkap sebelum disimpan
+                    if (result.result && result.result.url.startsWith('/')) {
+                        result.result.url = origin + result.result.url;
+                    }
+                    
                     const dbId = await tempService.save(result, 30);
                     // Format SSE: [true] link_pengambilan_data
                     await send(`[true] ${origin}/api/temp/${dbId}`);
                 } else {
-                    await send(`[false] ${result.message || 'Gagal menghasilkan gambar.'}`);
+                    await send(`[false] Gagal menghasilkan gambar.`);
                 }
             } catch (err) {
                 if (keepAliveInterval) clearInterval(keepAliveInterval);
