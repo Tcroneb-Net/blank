@@ -4,16 +4,16 @@ import tempService from '../../../../lib/tempService';
 
 export const runtime = 'nodejs';
 
-// Daftar Fakta Unik untuk Keep Alive
+// List of Unique Facts for Keep Alive
 const FACTS = [
-    "Flux adalah model generasi gambar yang sangat efisien.",
-    "Semut tidak pernah tidur.",
-    "Madu adalah satu-satunya makanan yang tidak basi.",
-    "AI dapat memproses gambar ribuan kali lebih cepat dari manusia.",
-    "Gajah adalah satu-satunya mamalia yang tidak bisa melompat.",
-    "Lidah jerapah berwarna biru hitam.",
-    "Otak manusia bekerja lebih aktif saat tidur daripada saat menonton TV.",
-    "Air panas membeku lebih cepat daripada air dingin."
+    "Flux is a highly efficient image generation model.",
+    "Ants never sleep.",
+    "Honey is the only food that never spoils.",
+    "AI can process images thousands of times faster than humans.",
+    "Elephants are the only mammals that cannot jump.",
+    "A giraffe's tongue is blue-black.",
+    "The human brain is more active during sleep than while watching TV.",
+    "Hot water freezes faster than cold water."
 ];
 
 export async function POST(req) {
@@ -22,7 +22,10 @@ export async function POST(req) {
         const { prompt } = body;
         
         if (!prompt) {
-            return NextResponse.json({ error: "Parameter 'prompt' wajib diisi." }, { status: 400 });
+            return NextResponse.json(
+                { error: "The 'prompt' parameter is required." }, 
+                { status: 400 }
+            );
         }
 
         const origin = new URL(req.url).origin;
@@ -38,9 +41,11 @@ export async function POST(req) {
         (async () => {
             let keepAliveInterval;
             try {
-                await send(`Memulai generasi gambar Flux untuk: "${prompt}"...\n`);
+                await send(
+                    `Connecting to GraduallyAI Engine...\nGenerating: "${prompt}"\n`
+                );
 
-                // Timer untuk mengirim fakta setiap 2 detik agar koneksi tidak putus
+                // Timer to send facts every 2 seconds to keep connection alive
                 keepAliveInterval = setInterval(() => {
                     const fact = FACTS[Math.floor(Math.random() * FACTS.length)];
                     send(`Info: ${fact}\n`);
@@ -51,11 +56,17 @@ export async function POST(req) {
                 clearInterval(keepAliveInterval);
 
                 if (result.success) {
+                    // Ensure the URL in result has full origin before saving
+                    if (result.result && result.result.url.startsWith('/')) {
+                        result.result.url = origin + result.result.url;
+                    }
+                    
                     const dbId = await tempService.save(result, 30);
-                    // Format SSE: [true] link_pengambilan_data
+
+                    // SSE format: [true] data_fetch_link
                     await send(`[true] ${origin}/api/temp/${dbId}`);
                 } else {
-                    await send(`[false] ${result.message || 'Gagal menghasilkan gambar.'}`);
+                    await send(`[false] Failed to generate image.`);
                 }
             } catch (err) {
                 if (keepAliveInterval) clearInterval(keepAliveInterval);
@@ -78,6 +89,9 @@ export async function POST(req) {
         });
 
     } catch (error) {
-        return NextResponse.json({ error: error.message }, { status: 500 });
+        return NextResponse.json(
+            { error: error.message }, 
+            { status: 500 }
+        );
     }
 }
