@@ -1,10 +1,11 @@
 import { NextResponse } from 'next/server';
-import instagramController from '../../../../lib/controllers/downloader/igdl';
+import instagramController from '../../../../lib/controllers/downloader/instagram';
+
+export const dynamic = 'force-dynamic';
 
 export async function POST(req) {
     try {
         const body = await req.json();
-        
         const mockReq = { body };
         
         const result = await instagramController(mockReq);
