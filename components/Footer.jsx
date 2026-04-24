@@ -66,9 +66,9 @@ export default function Footer() {
                             <div className="flex items-center gap-4 bg-white/5 px-5 py-3 rounded-2xl border border-white/10 backdrop-blur-sm">
                                 <div className="flex -space-x-3">
                                     {[
-                                        "https://api.dicebear.com/7.x/adventurer/svg?seed=Anya&mood=happy",
-                                        "https://api.dicebear.com/7.x/adventurer/svg?seed=Felix&mood=happy",
-                                        "https://api.dicebear.com/7.x/adventurer/svg?seed=Kaito&mood=happy"
+                                        "/anime-char-1.jpg",
+                                        "/anime-char-2.jpg",
+                                        "/anime-char-3.jpg"
                                     ].map((url, i) => (
                                         <div key={i} className="w-10 h-10 rounded-full border-2 border-[#111] bg-gray-800 overflow-hidden relative shadow-lg">
                                             <Image 
@@ -97,4 +97,4 @@ export default function Footer() {
             </div>
         </footer>
     );
-}
+}

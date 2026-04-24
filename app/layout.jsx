@@ -1,6 +1,7 @@
 import React from 'react';
 import Script from 'next/script';
 import './globals.css';
+import Navbar from '../components/Navbar';
 import BottomNav from '../components/BottomNav';
 import NextNProgress from '../components/NextNProgress';
 import Footer from '../components/Footer';
@@ -69,11 +70,12 @@ export default function RootLayout({ children }) {
         
         <NextNProgress />
         <FeaturedPopup />
+        <Navbar />
         
         <div className="background-animation"></div>
         
         {/* Menggunakan min-h-dvh untuk stabilitas viewport pada mobile */}
-        <div className="container mx-auto px-4 max-w-md md:max-w-3xl min-h-dvh relative z-10 pt-6">
+        <div className="container mx-auto px-4 max-w-md md:max-w-3xl min-h-dvh relative z-10 pt-6 md:pt-24">
             <main className="relative z-20">{children}</main>
             <Footer />
         </div>
