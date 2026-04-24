@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
 
 export default function ListPage() {
@@ -10,7 +10,7 @@ export default function ListPage() {
     const [loading, setLoading] = useState(true);
     const [searchQuery, setSearchQuery] = useState('');
 
-    const fetchPages = async (p) => {
+    const fetchPages = useCallback(async (p) => {
         setLoading(true);
         try {
             const res = await fetch(`/api/pages?page=${p}&search=${encodeURIComponent(searchQuery)}`);
@@ -22,20 +22,20 @@ export default function ListPage() {
             console.error('Failed to fetch pages:', e);
         }
         setLoading(false);
-    };
+    }, [searchQuery]);
 
     useEffect(() => {
         const timer = setTimeout(() => {
             fetchPages(1);
         }, 500);
         return () => clearTimeout(timer);
-    }, [searchQuery]);
+    }, [fetchPages]);
 
     useEffect(() => {
         if (page > 1 || !searchQuery) {
             fetchPages(page);
         }
-    }, [page]);
+    }, [page, fetchPages, searchQuery]);
 
     return (
         <div className="animate-fade-in pb-8">
