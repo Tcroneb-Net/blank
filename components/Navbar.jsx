@@ -19,8 +19,8 @@ const Navbar = () => {
             {/* Desktop Header */}
             <header className="fixed top-0 left-0 right-0 z-50 hidden md:flex items-center justify-between px-6 py-4 backdrop-blur-md bg-card/50 border-b border-default">
                 <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-purple-500 to-blue-600 flex items-center justify-center shadow-lg shadow-purple-500/20">
-                        <i className="fas fa-play text-white text-sm"></i>
+                    <div className="w-10 h-10 rounded-xl flex items-center justify-center shadow-lg overflow-hidden border border-white/10">
+                        <img src="/favicon.jpg" alt="Logo" className="w-full h-full object-cover" />
                     </div>
                     <span className="font-black text-white tracking-tighter text-lg">PuruBoy API</span>
                 </div>

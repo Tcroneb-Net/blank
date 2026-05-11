@@ -11,17 +11,30 @@ export const metadata = {
 };
 
 const Hero = () => (
-    <div className="text-center mb-12 animate-fade-in pt-6">
-        <div className="inline-block mb-5 relative">
-            <div className="w-24 h-24 bg-gradient-to-br from-pink-500 via-purple-600 to-blue-600 rounded-3xl mx-auto flex items-center justify-center shadow-2xl shadow-pink-500/30 border border-white/10">
-                <i className="fas fa-bolt text-4xl text-white drop-shadow-lg"></i>
-            </div>
-            <span className="absolute -top-1 -right-1 w-5 h-5 bg-green-400 rounded-full border-2 border-[#09090b] animate-pulse"></span>
+    <div className="text-center mb-12 animate-fade-in pt-8 md:pt-12 relative">
+        {/* Background Video Full Width - Posisi Absolute agar tidak mengganggu layout teks */}
+        <div className="absolute -top-6 md:-top-24 left-1/2 -translate-x-1/2 w-[100vw] h-[350px] md:h-[450px] pointer-events-none -z-10 overflow-hidden">
+            {/* Gradient untuk efek mulus (dark) di sisi dan bawah video */}
+            <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#09090b]/40 to-[#09090b] z-10"></div>
+            <div className="absolute inset-0 bg-gradient-to-r from-[#09090b] via-transparent to-[#09090b] z-10"></div>
+            
+            <video
+                src="https://github.com/purujawa06-bot/My-db/raw/refs/heads/main/video/latar-belakang-atas.webm"
+                autoPlay
+                loop
+                muted
+                playsInline
+                className="w-full h-full object-cover opacity-60 mix-blend-screen"
+            />
         </div>
-        <div className="mb-1">
-            <span className="text-[11px] bg-accent/10 text-accent border border-accent/20 px-3 py-1 rounded-full font-bold uppercase tracking-widest">
-                🚀 Free & Open REST API
-            </span>
+
+        <div className="mb-4 relative z-20">
+            <div className="inline-block relative">
+                <span className="text-[11px] bg-accent/10 text-accent border border-accent/20 px-3 py-1 rounded-full font-bold uppercase tracking-widest">
+                    🚀 Free & Open REST API
+                </span>
+                <span className="absolute -top-1 -right-2 w-3 h-3 bg-green-400 rounded-full border-2 border-[#09090b] animate-pulse z-10"></span>
+            </div>
         </div>
         <h1 className="text-5xl font-extrabold text-primary mb-3 tracking-tight mt-4">
             PuruBoy <span className="gradient-text">API</span>
