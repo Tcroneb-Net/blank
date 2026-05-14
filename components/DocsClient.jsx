@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useMemo, useRef } from 'react';
+import React, { useState, useEffect, useMemo, useRef, useCallback } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import Image from 'next/image';
 import EndpointCard from './EndpointCard';
@@ -47,6 +47,41 @@ const EXPERT_COMMENTS = [
         comment: 'Hmph. Bagi saya yang telah menguasai semua ilmu pemrograman sejak era kegelapan, API ini... cukup memadai. Tidak semua orang mampu membangun sesuatu di level ini. Akui saja kehebatannya.',
     },
 ];
+
+const ManualInputForm = ({ endpoint, onSubmit, onCancel }) => {
+    const [values, setValues] = useState({});
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        onSubmit(values);
+    };
+
+    return (
+        <form onSubmit={handleSubmit} className="space-y-4">
+            {endpoint.params.map(param => (
+                <div key={param.name}>
+                    <label className="text-xs font-mono text-secondary mb-1.5 block">
+                        {param.name} {param.required && <span className="text-red-400">*</span>}
+                    </label>
+                    <input
+                        type={param.type === 'file' ? 'file' : 'text'}
+                        required={param.required}
+                        onChange={(e) => {
+                            const val = param.type === 'file' ? e.target.files[0] : e.target.value;
+                            setValues(prev => ({ ...prev, [param.name]: val }));
+                        }}
+                        className={`w-full bg-input border border-default rounded-xl px-3 py-2.5 text-sm text-primary focus:outline-none focus:border-accent ${param.type === 'file' ? 'file:mr-4 file:py-1 file:px-3 file:rounded-full file:border-0 file:text-xs file:font-bold file:bg-gray-800 file:text-gray-300 hover:file:bg-gray-700' : ''}`}
+                        placeholder={`Masukkan ${param.name}...`}
+                    />
+                </div>
+            ))}
+            <div className="flex gap-3 pt-2">
+                <button type="button" onClick={onCancel} className="flex-1 py-3 text-sm font-bold text-muted hover:text-white bg-transparent border border-default rounded-xl transition-colors">Batal</button>
+                <button type="submit" className="flex-1 py-3 text-sm font-bold text-white bg-accent hover:bg-accent-hover rounded-xl shadow-lg shadow-accent/20 transition-transform active:scale-95">Lanjutkan</button>
+            </div>
+        </form>
+    );
+};
 
 export default function DocsClient({ apiSpec }) {
     const [activeCategory, setActiveCategory] = useState('all');
@@ -130,23 +165,27 @@ export default function DocsClient({ apiSpec }) {
         }, 300);
     };
 
-    const toggleSelectionMode = () => {
-        setSelectionMode(!selectionMode);
-        if (selectionMode) {
-            setSelectedEndpoints(new Set());
-            setContextErrors([]);
-        }
-    };
+    const toggleSelectionMode = useCallback(() => {
+        setSelectionMode(prev => {
+            if (!prev) {
+                setSelectedEndpoints(new Set());
+                setContextErrors([]);
+            }
+            return !prev;
+        });
+    }, []);
 
-    const handleToggleSelect = (endpoint) => {
-        const newSet = new Set(selectedEndpoints);
-        if (newSet.has(endpoint.path)) {
-            newSet.delete(endpoint.path);
-        } else {
-            newSet.add(endpoint.path);
-        }
-        setSelectedEndpoints(newSet);
-    };
+    const handleToggleSelect = useCallback((endpoint) => {
+        setSelectedEndpoints(prev => {
+            const newSet = new Set(prev);
+            if (newSet.has(endpoint.path)) {
+                newSet.delete(endpoint.path);
+            } else {
+                newSet.add(endpoint.path);
+            }
+            return newSet;
+        });
+    }, []);
 
     const requestManualInput = (endpoint) => {
         return new Promise((resolve, reject) => {
@@ -160,10 +199,9 @@ export default function DocsClient({ apiSpec }) {
         });
     };
 
-    const handleManualSubmit = (e) => {
-        e.preventDefault();
+    const handleManualSubmit = (values) => {
         if (manualInputState.resolve) {
-            manualInputState.resolve(manualInputState.values);
+            manualInputState.resolve(values);
         }
         setManualInputState({ isOpen: false, endpoint: null, resolve: null, reject: null, values: {} });
     };
@@ -577,32 +615,11 @@ export default function DocsClient({ apiSpec }) {
                             <i className="fas fa-exclamation-triangle mr-2"></i>
                             Endpoint <strong className="font-mono text-white">{manualInputState.endpoint.path}</strong> memerlukan input payload manual untuk melanjutkan proses context.
                         </div>
-                        <form onSubmit={handleManualSubmit} className="space-y-4">
-                            {manualInputState.endpoint.params.map(param => (
-                                <div key={param.name}>
-                                    <label className="text-xs font-mono text-secondary mb-1.5 block">
-                                        {param.name} {param.required && <span className="text-red-400">*</span>}
-                                    </label>
-                                    <input
-                                        type={param.type === 'file' ? 'file' : 'text'}
-                                        required={param.required}
-                                        onChange={(e) => {
-                                            const val = param.type === 'file' ? e.target.files[0] : e.target.value;
-                                            setManualInputState(prev => ({
-                                                ...prev,
-                                                values: { ...prev.values, [param.name]: val }
-                                            }));
-                                        }}
-                                        className={`w-full bg-input border border-default rounded-xl px-3 py-2.5 text-sm text-primary focus:outline-none focus:border-accent ${param.type === 'file' ? 'file:mr-4 file:py-1 file:px-3 file:rounded-full file:border-0 file:text-xs file:font-bold file:bg-gray-800 file:text-gray-300 hover:file:bg-gray-700' : ''}`}
-                                        placeholder={`Masukkan ${param.name}...`}
-                                    />
-                                </div>
-                            ))}
-                            <div className="flex gap-3 pt-2">
-                                <button type="button" onClick={handleManualCancel} className="flex-1 py-3 text-sm font-bold text-muted hover:text-white bg-transparent border border-default rounded-xl transition-colors">Batal</button>
-                                <button type="submit" className="flex-1 py-3 text-sm font-bold text-white bg-accent hover:bg-accent-hover rounded-xl shadow-lg shadow-accent/20 transition-transform active:scale-95">Lanjutkan</button>
-                            </div>
-                        </form>
+                        <ManualInputForm 
+                            endpoint={manualInputState.endpoint}
+                            onSubmit={handleManualSubmit}
+                            onCancel={handleManualCancel}
+                        />
                     </div>
                 )}
             </InfoModal>

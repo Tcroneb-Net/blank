@@ -1,10 +1,10 @@
 'use client';
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, memo } from 'react';
 import MethodBadge from './MethodBadge';
 import CopyButton from './CopyButton';
 import InfoModal from './InfoModal';
 
-const EndpointCard = ({ endpoint, baseUrl, id, isHighlighted, onExpand, selectionMode, isSelected, onToggleSelect }) => {
+const EndpointCard = memo(function EndpointCard({ endpoint, baseUrl, id, isHighlighted, onExpand, selectionMode, isSelected, onToggleSelect }) {
     const [isOpen, setIsOpen] = useState(false);
     const [activeTab, setActiveTab] = useState('params'); 
     const [isLoading, setIsLoading] = useState(false);
@@ -528,6 +528,6 @@ const EndpointCard = ({ endpoint, baseUrl, id, isHighlighted, onExpand, selectio
             </InfoModal>
         </>
     );
-};
+    });
 
-export default EndpointCard;
+    export default EndpointCard;
