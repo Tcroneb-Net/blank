@@ -12,22 +12,6 @@ export const metadata = {
 
 const Hero = () => (
     <div className="text-center mb-12 animate-fade-in pt-8 md:pt-12 relative">
-        {/* Background Video Full Width - Posisi Absolute agar tidak mengganggu layout teks */}
-        <div className="absolute -top-6 md:-top-24 left-1/2 -translate-x-1/2 w-[100vw] h-[350px] md:h-[450px] pointer-events-none -z-10 overflow-hidden">
-            {/* Gradient untuk efek mulus (dark) di sisi dan bawah video */}
-            <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#09090b]/40 to-[#09090b] z-10"></div>
-            <div className="absolute inset-0 bg-gradient-to-r from-[#09090b] via-transparent to-[#09090b] z-10"></div>
-            
-            <video
-                src="https://github.com/purujawa06-bot/My-db/raw/refs/heads/main/video/latar-belakang-atas.webm"
-                autoPlay
-                loop
-                muted
-                playsInline
-                className="w-full h-full object-cover opacity-60 mix-blend-screen"
-            />
-        </div>
-
         <div className="mb-4 relative z-20">
             <div className="inline-block relative">
                 <span className="text-[11px] bg-accent/10 text-accent border border-accent/20 px-3 py-1 rounded-full font-bold uppercase tracking-widest">
