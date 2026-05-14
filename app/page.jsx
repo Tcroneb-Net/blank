@@ -99,14 +99,14 @@ const ChannelPromo = () => (
             <div className="absolute inset-0 bg-gradient-to-t from-[#121215] via-[#121215]/60 to-transparent"></div>
             <div className="absolute bottom-0 left-0 right-0 p-5">
                 <div className="flex items-center gap-2 mb-2">
-                    <span className="bg-[#25D366] text-white text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider shadow-sm">
+                    <span className="bg-[#24A1DE] text-white text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider shadow-sm">
                         ✓ Official
                     </span>
                     <span className="text-gray-300 text-[10px] font-medium flex items-center gap-1">
                         <i className="fas fa-users"></i> Community Channel
                     </span>
                 </div>
-                <h3 className="text-xl font-bold text-white drop-shadow-md">WhatsApp Channel</h3>
+                <h3 className="text-xl font-bold text-white drop-shadow-md">Telegram Channel</h3>
             </div>
         </div>
         <div className="p-5 pt-3 bg-[#121215]">
@@ -114,12 +114,12 @@ const ChannelPromo = () => (
                 Dapatkan notifikasi update fitur, info maintenance, dan bagi-bagi script gratis langsung dari sumbernya.
             </p>
             <a 
-                href="https://whatsapp.com/channel/0029Vb7OMyy96H4TkWjlTO0V" 
+                href="https://t.me/puruboy_hub" 
                 target="_blank" 
                 rel="noopener noreferrer"
-                className="w-full bg-[#25D366] hover:bg-[#1da851] text-white font-bold py-3 rounded-xl transition-all active:scale-95 flex items-center justify-center gap-2 shadow-lg shadow-green-900/20"
+                className="w-full bg-[#24A1DE] hover:bg-[#1b8abf] text-white font-bold py-3 rounded-xl transition-all active:scale-95 flex items-center justify-center gap-2 shadow-lg shadow-blue-900/20"
             >
-                <i className="fab fa-whatsapp text-lg"></i>
+                <i className="fab fa-telegram text-lg"></i>
                 <span>Gabung Channel</span>
             </a>
         </div>
