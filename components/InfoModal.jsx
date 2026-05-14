@@ -8,7 +8,6 @@ const InfoModal = ({ isOpen, onClose, title, children }) => {
 
     useEffect(() => {
         setMounted(true);
-        return () => setMounted(false);
     }, []);
 
     useEffect(() => {
@@ -16,18 +15,18 @@ const InfoModal = ({ isOpen, onClose, title, children }) => {
             setAnimationState(true);
             document.body.style.overflow = 'hidden';
         } else {
-            // UPDATED: Delay diperpanjang ke 500ms agar sinkron dengan durasi animasi baru
+            document.body.style.overflow = '';
             const timer = setTimeout(() => setAnimationState(false), 500);
-            document.body.style.overflow = 'auto';
             return () => clearTimeout(timer);
         }
     }, [isOpen]);
 
-    if (!mounted || (!isOpen && !animationState)) return null;
+    if (!mounted) return null;
+    if (!isOpen && !animationState) return null;
 
     return createPortal(
         <div 
-            className={`fixed inset-0 z-50 flex items-end md:items-center justify-center bg-black/60 backdrop-blur-sm transition-opacity duration-500 ${isOpen ? 'opacity-100' : 'opacity-0'}`}
+            className={`fixed inset-0 z-[100] flex items-end md:items-center justify-center bg-black/60 backdrop-blur-sm transition-all duration-500 ${isOpen ? 'opacity-100 visible' : 'opacity-0 invisible'}`}
             onClick={onClose}
         >
             {/* Bottom Sheet Wrapper */}
