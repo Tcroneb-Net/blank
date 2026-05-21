@@ -23,6 +23,12 @@ const EndpointCard = memo(function EndpointCard({ endpoint, baseUrl, id, isHighl
         }
     }, [isHighlighted]);
 
+    useEffect(() => {
+        if (isOpen && hasAutoFill) {
+            autoFill();
+        }
+    }, [isOpen]);
+
     const handleTryItOut = async (e) => {
         e.preventDefault();
         setFinalData(null);

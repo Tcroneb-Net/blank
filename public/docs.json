@@ -751,6 +751,85 @@
       ]
     },
     {
+      "title": "Nekokun Detail",
+      "summary": "Detail anime dari Nekokun.",
+      "description": "Mengambil informasi lengkap anime termasuk daftar episode.",
+      "method": "GET",
+      "path": "/api/anime/nekokun/detail",
+      "responseType": "json",
+      "example": "async function getDetail() {\n   const res = await fetch('/api/anime/nekokun/detail?url=/anime/one-piece/');\n   const data = await res.json();\n   console.log(data);\n }",
+      "params": [
+        {
+          "name": "url",
+          "in": "query",
+          "type": "string",
+          "description": "Path atau URL anime dari Nekokun.",
+          "required": true
+        }
+      ]
+    },
+    {
+      "title": "Nekokun Home",
+      "summary": "Beranda Nekokun.",
+      "description": "Mengambil data dari halaman utama Nekokun, mencakup anime terbaru dan populer.",
+      "method": "GET",
+      "path": "/api/anime/nekokun/home",
+      "responseType": "json",
+      "example": "async function getHome() {\n   const res = await fetch('/api/anime/nekokun/home?page=1');\n   const data = await res.json();\n   console.log(data);\n }",
+      "params": [
+        {
+          "name": "page",
+          "in": "query",
+          "type": "string",
+          "description": "Nomor halaman.",
+          "required": false
+        }
+      ]
+    },
+    {
+      "title": "Nekokun Search",
+      "summary": "Cari anime di Nekokun.",
+      "description": "Mencari anime berdasarkan kata kunci di database Nekokun.",
+      "method": "GET",
+      "path": "/api/anime/nekokun/search",
+      "responseType": "json",
+      "example": "async function searchAnime() {\n   const res = await fetch('/api/anime/nekokun/search?q=One Piece&page=1');\n   const data = await res.json();\n   console.log(data);\n }",
+      "params": [
+        {
+          "name": "q",
+          "in": "query",
+          "type": "string",
+          "description": "Kata kunci pencarian.",
+          "required": true
+        },
+        {
+          "name": "page",
+          "in": "query",
+          "type": "string",
+          "description": "Nomor halaman.",
+          "required": false
+        }
+      ]
+    },
+    {
+      "title": "Nekokun Stream",
+      "summary": "Link streaming dan download anime dari Nekokun.",
+      "description": "Mengambil link embed video dan link download untuk episode tertentu.",
+      "method": "GET",
+      "path": "/api/anime/nekokun/stream",
+      "responseType": "json",
+      "example": "async function getStream() {\n   const res = await fetch('/api/anime/nekokun/stream?url=/one-piece-episode-1162/');\n   const data = await res.json();\n   console.log(data);\n }",
+      "params": [
+        {
+          "name": "url",
+          "in": "query",
+          "type": "string",
+          "description": "Path atau URL episode dari Nekokun.",
+          "required": true
+        }
+      ]
+    },
+    {
       "title": "Oploverz Detail",
       "summary": "Oploverz Anime Detail.",
       "description": "Mengambil informasi detail anime Oploverz berdasarkan URL atau Path. Termasuk daftar episode dengan link yang disesuaikan ke API.",
