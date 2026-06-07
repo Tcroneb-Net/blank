@@ -1,6 +1,6 @@
 import React, { Suspense } from 'react';
-import { getDocsSpec } from './lib/docsService';
-import DocsClient from './components/DocsClient';
+import { getDocsSpec } from '../lib/docsService';
+import DocsClient from '../components/DocsClient';
 
 export const metadata = {
     title: 'API Documentation | PuruBoy API',
