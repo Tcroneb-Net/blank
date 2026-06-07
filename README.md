@@ -1,111 +1,110 @@
-# NextA-API (PuruBoy API)
+# PuruBoy API
 
-Project API Publik yang modular, modern, dan kaya fitur, dibangun menggunakan **Next.js**. Project ini menyediakan berbagai layanan REST API gratis mulai dari **AI Tools** (Text-to-Image, Chat, TTS), **Downloader** (YouTube, TikTok, IG), hingga **Anime Streaming** dan **Tools** utilitas lainnya.
+Free and open REST API platform built with **Next.js**. A comprehensive collection of useful APIs for developers, featuring AI tools, downloaders, anime streaming, and more.
 
-Dilengkapi dengan antarmuka dokumentasi otomatis (Swagger-like) yang ramah pengguna dan fitur komunitas (Chat Room).
+Includes interactive API documentation (Swagger-like) and a clean, modern playground.
 
-## 🚀 Fitur Utama
+## 🚀 Key Features
 
 ### 🤖 Artificial Intelligence (AI)
-- **Text to Image**: Vheer, Flux, Ghibli Style, Brat Generator.
-- **ChatBot**: Grok-4, GPT-4 (Typli), Custom Agents (Llama, DeepSeek).
-- **Vision**: Analisis gambar menggunakan Gemini (ScreenApp).
-- **Text to Speech (TTS)**: Svara, Aitwo (Bahasa Indonesia).
-- **Text Processing**: Translapp (Translate, Paraphrase, Summarize).
+- **Text to Image**: Vheer, Flux, Ghibli Style, Brat Generator
+- **ChatBot**: Grok-4, GPT-4 (Typli), Custom Agents (Llama, DeepSeek)
+- **Vision**: Image analysis using Gemini (ScreenApp)
+- **Text to Speech (TTS)**: Svara, Aitwo
+- **Text Processing**: Translapp (Translate, Paraphrase, Summarize)
 
 ### 📥 Downloader
-- **YouTube**: Download Video/Audio.
-- **TikTok**: Download No Watermark.
-- **Instagram**: Video, Reels, Foto.
-- **Facebook**: Video SD/HD.
-- **SoundCloud**: Download Lagu MP3.
+- **YouTube**: Download Video/Audio
+- **TikTok**: Download No Watermark
+- **Instagram**: Video, Reels, Photos
+- **Facebook**: Video SD/HD
+- **SoundCloud**: Download MP3
 
-### 🎬 Anime & Hiburan
-- **Oploverz**: Search, Detail, Stream, Download.
-- **MyAnimeList**: Search, Popular, Ongoing, Genre.
-- **SoundCloud Search**: Cari & Play musik.
+### 🎬 Anime & Entertainment
+- **Oploverz**: Search, Detail, Stream, Download
+- **MyAnimeList**: Search, Popular, Ongoing, Genre
+- **SoundCloud Search**: Search & Play music
 
 ### 🛠️ Tools
-- **Image Editing**: Remove Background, Upscale (Peningkatan Kualitas), Colorize (Pewarnaan Foto Lama).
-- **System**: Fast Update via AI, Blog System.
+- **Image Editing**: Remove Background, Upscale (Quality Enhancement), Colorize (Old Photo Coloring)
+- **System**: Fast Update via AI, Blog System
 
-## 🛠️ Teknologi yang Digunakan
+## 🛠️ Technology Stack
 
 - **Framework**: [Next.js 14](https://nextjs.org/) (App Router)
 - **Styling**: [Tailwind CSS](https://tailwindcss.com/)
 - **Database**: [PostgreSQL](https://www.postgresql.org/) (via `pg`)
-- **Dokumentasi**: Auto-generated dari JSDoc Controller.
-- **HTTP Client**: Axios & Fetch.
+- **Documentation**: Auto-generated from JSDoc Controllers
+- **HTTP Client**: Axios & Fetch
 
-## ⚙️ Prasyarat
+## ⚙️ Requirements
 
-Sebelum memulai, pastikan Anda telah menginstal:
-- [Node.js](https://nodejs.org/) (Versi 18 atau terbaru disarankan)
+Before you start, ensure you have installed:
+- [Node.js](https://nodejs.org/) (Version 18 or latest recommended)
 - [Git](https://git-scm.com/)
-- Database PostgreSQL (Bisa menggunakan layanan gratis seperti Neon.tech atau Supabase).
+- PostgreSQL Database (You can use free services like Neon.tech or Supabase)
 
-## 📦 Instalasi & Menjalankan Lokal
+## 📦 Installation & Setup
 
-Ikuti langkah-langkah berikut untuk menjalankan proyek ini di komputer Anda:
+Follow these steps to run the project on your computer:
 
-1.  **Clone Repository**
-    ```bash
-    git clone https://github.com/username/NextA-API.git
-    cd NextA-API
-    ```
+1. **Clone Repository**
+   ```bash
+   git clone https://github.com/Tcroneb-Net/blank.git
+   cd blank
+   ```
 
-2.  **Instal Dependencies**
-    ```bash
-    npm install
-    ```
+2. **Install Dependencies**
+   ```bash
+   npm install
+   ```
 
-3.  **Konfigurasi Environment Variable**
-    Buat file `.env.local` di root folder proyek dan isi dengan konfigurasi berikut:
+3. **Configure Environment Variables**
+   Create a `.env.local` file in the root project folder and fill it with the following configuration:
 
-    ```env
-    # Koneksi Database PostgreSQL
-    PURUBOY_PG_URL="postgres://user:password@host:port/database?sslmode=require"
+   ```env
+   # PostgreSQL Database Connection
+   PURUBOY_PG_URL="postgres://user:password@host:port/database?sslmode=require"
 
-    # Password untuk Admin (Blog Posting & Delete)
-    PURUBOY_ADMIN_KEY="password_rahasia_anda"
-    ```
+   # Admin Password (for Blog Posting & Delete)
+   PURUBOY_ADMIN_KEY="your_secret_password"
+   ```
 
-4.  **Jalankan Server Development**
-    ```bash
-    npm run dev
-    ```
+4. **Run Development Server**
+   ```bash
+   npm run dev
+   ```
 
-    Buka browser dan akses [http://localhost:3000](http://localhost:3000).
+   Open your browser and visit [http://localhost:3000](http://localhost:3000).
 
-## 📂 Struktur Proyek
+## 📂 Project Structure
 
-Agar mudah dipahami, berikut adalah struktur folder utama:
+Here is the main folder structure:
 
-- **`app/`**: Halaman frontend dan API Routes (Next.js App Router).
-  - `app/api/`: Endpoint API (Route Handlers).
-  - `app/docs/`: Halaman dokumentasi.
-- **`components/`**: Komponen React UI (Card, Navbar, dll).
-- **`lib/`**: Logika bisnis dan helper.
-  - `lib/controllers/`: Logika utama untuk setiap endpoint (sumber dokumentasi).
-  - `lib/xxx.js`: Helper function (scraper, external api wrapper).
-- **`public/`**: Aset statis (gambar, favicon).
+- **`app/`**: Frontend pages and API Routes (Next.js App Router)
+  - `app/api/`: API endpoints (Route Handlers)
+- **`components/`**: React UI Components (Card, Navbar, etc)
+- **`lib/`**: Business logic and helpers
+  - `lib/controllers/`: Core logic for each endpoint (documentation source)
+  - `lib/xxx.js`: Helper functions (scrapers, external API wrappers)
+- **`public/`**: Static assets (images, favicon)
 
 ## 🚀 Deployment
 
-Cara termudah untuk men-deploy adalah menggunakan **Vercel**:
+The easiest way to deploy is using **Vercel**:
 
-1.  Push kode ke GitHub/GitLab.
-2.  Buka [Vercel](https://vercel.com) dan "Import Project".
-3.  Masukkan Environment Variables (`PURUBOY_PG_URL`, `PURUBOY_ADMIN_KEY`) di pengaturan Vercel.
-4.  Deploy!
+1. Push your code to GitHub/GitLab
+2. Go to [Vercel](https://vercel.com) and "Import Project"
+3. Add Environment Variables (`PURUBOY_PG_URL`, `PURUBOY_ADMIN_KEY`) in Vercel settings
+4. Deploy!
 
-## 🤝 Kontribusi
+## 🤝 Contributing
 
-Kami sangat terbuka untuk kontribusi! Silakan lihat [CONTRIBUTING.md](CONTRIBUTING.md) untuk panduan lengkap cara menambahkan fitur atau memperbaiki bug.
+We welcome contributions! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for complete guidelines on how to add features or fix bugs.
 
-## 📝 Lisensi
+## 📝 License
 
-Proyek ini bersifat open-source. Silakan gunakan untuk pembelajaran atau pengembangan lebih lanjut.
+This project is open-source. Feel free to use it for learning or further development.
 
 ---
 **Author**: PuruBoy
