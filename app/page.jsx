@@ -3,9 +3,9 @@ import { getDocsSpec } from '../lib/docsService';
 import DocsClient from '../components/DocsClient';
 
 export const metadata = {
-    title: 'API Documentation | PuruBoy API',
-    description: 'Explore PuruBoy API endpoints. Interactive documentation for AI features, Downloaders, Anime Streaming, and more tools.',
-    keywords: ['API Documentation', 'API Docs', 'PuruBoy Endpoints', 'How to use PuruBoy API']
+    title: 'API Documentation | Hostify API',
+    description: 'Explore Hostify API endpoints. Interactive documentation for AI features, Downloaders, Anime Streaming, and more tools.',
+    keywords: ['API Documentation', 'API Docs', 'Hostify Endpoints', 'How to use Hostify API']
 };
 
 export const revalidate = 3600;
