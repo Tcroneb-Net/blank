@@ -32,13 +32,13 @@ const EXPERT_COMMENTS = [
         avatar: 'https://i.pinimg.com/736x/f2/8a/b6/f28ab68204ab44dacd2297c48c52a985.jpg',
         name: 'Eleina',
         role: 'AI Research Engineer',
-        comment: 'Wah, dokumentasi API ini sungguh luar biasa! Sangat lengkap, mudah dipahami, dan fitur-fiturnya benar-benar inovatif. Saya sangat terkesan dengan kualitasnya! 🌟',
+        comment: 'Wow , Zimbabweans Lets Share',
     },
     {
         avatar: 'https://i.pinimg.com/736x/4d/03/f1/4d03f109a06ef1812bfa454048bb3bef.jpg',
         name: 'Alicia',
         role: 'Backend Developer',
-        comment: 'Lumayan sih. Dokumentasinya cukup jelas, endpoint-nya banyak. Bisa dipakai lah buat proyek.',
+        comment: 'World ofTechnology huchiiii.',
     },
     {
         avatar: 'https://i.pinimg.com/originals/f6/09/4f/f6094f5d9d23e2b26208e5a3b27cb0d4.jpg',
