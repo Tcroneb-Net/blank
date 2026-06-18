@@ -7,7 +7,7 @@
       "method": "POST",
       "path": "/api/ai/chatespanyol",
       "responseType": "json",
-      "example": "async function chat() {\n   try {\n     const response = await fetch('/api/ai/chatespanyol', {\n       method: 'POST',\n       headers: { 'Content-Type': 'application/json' },\n       body: JSON.stringify({ \n         \"message\": \"Halo Kawanku\" \n       })\n     });\n \n     const data = await response.json();\n     console.log(data);\n   } catch (error) {\n     console.error('Error:', error);\n   }\n }\n \n chat();",
+      "example": "async function chat() {\r   try {\r     const response = await fetch('/api/ai/chatespanyol', {\r       method: 'POST',\r       headers: { 'Content-Type': 'application/json' },\r       body: JSON.stringify({ \r         \"message\": \"Halo Kawanku\" \r       })\r     });\r \r     const data = await response.json();\r     console.log(data);\r   } catch (error) {\r     console.error('Error:', error);\r   }\r }\r \r chat();",
       "params": [
         {
           "name": "message",
@@ -39,7 +39,7 @@
       "method": "POST",
       "path": "/api/ai/deepsearch",
       "responseType": "json",
-      "example": "async function askDeepSearch() {\n   const response = await fetch('/api/ai/deepsearch', {\n     method: 'POST',\n     headers: { 'Content-Type': 'application/json' },\n     body: JSON.stringify({ \n       \"prompt\": \"Jelaskan tentang Black Hole secara sederhana\",\n       \"modelType\": \"reasoner\"\n     })\n   });\n \n   const reader = response.body.getReader();\n   const decoder = new TextDecoder();\n   \n   while (true) {\n     const { done, value } = await reader.read();\n     if (done) break;\n     const text = decoder.decode(value);\n     // Format SSE: data: {\"type\": \"reasoning\"|\"text\", \"content\": \"...\"}\n     console.log(text);\n   }\n }",
+      "example": "async function askDeepSearch() {\r   const response = await fetch('/api/ai/deepsearch', {\r     method: 'POST',\r     headers: { 'Content-Type': 'application/json' },\r     body: JSON.stringify({ \r       \"prompt\": \"Jelaskan tentang Black Hole secara sederhana\",\r       \"modelType\": \"reasoner\"\r     })\r   });\r \r   const reader = response.body.getReader();\r   const decoder = new TextDecoder();\r   \r   while (true) {\r     const { done, value } = await reader.read();\r     if (done) break;\r     const text = decoder.decode(value);\r     // Format SSE: data: {\"type\": \"reasoning\"|\"text\", \"content\": \"...\"}\r     console.log(text);\r   }\r }",
       "params": [
         {
           "name": "prompt",
@@ -64,7 +64,7 @@
       "method": "POST",
       "path": "/api/ai/deepseek",
       "responseType": "json",
-      "example": "async function askDeepSeek() {\n   const response = await fetch('/api/ai/deepseek', {\n     method: 'POST',\n     headers: { 'Content-Type': 'application/json' },\n     body: JSON.stringify({ \n       \"prompt\": \"Jelaskan kenapa langit berwarna biru?\"\n     })\n   });\n \n   const reader = response.body.getReader();\n   const decoder = new TextDecoder();\n   \n   while (true) {\n     const { done, value } = await reader.read();\n     if (done) break;\n     const text = decoder.decode(value);\n     // Output berupa SSE event: data: {...}\n     console.log(text);\n   }\n }",
+      "example": "async function askDeepSeek() {\r   const response = await fetch('/api/ai/deepseek', {\r     method: 'POST',\r     headers: { 'Content-Type': 'application/json' },\r     body: JSON.stringify({ \r       \"prompt\": \"Jelaskan kenapa langit berwarna biru?\"\r     })\r   });\r \r   const reader = response.body.getReader();\r   const decoder = new TextDecoder();\r   \r   while (true) {\r     const { done, value } = await reader.read();\r     if (done) break;\r     const text = decoder.decode(value);\r     // Output berupa SSE event: data: {...}\r     console.log(text);\r   }\r }",
       "params": [
         {
           "name": "prompt",
@@ -82,7 +82,7 @@
       "method": "POST",
       "path": "/api/ai/dracin",
       "responseType": "json",
-      "example": "async function speakDracin() {\n   const res = await fetch('/api/ai/dracin', {\n     method: 'POST',\n     headers: { 'Content-Type': 'application/json' },\n     body: JSON.stringify({ \n       \"text\": \"Halo di sini soume\",\n       \"music\": true \n     })\n   });\n   const data = await res.json();\n   console.log(data);\n }",
+      "example": "async function speakDracin() {\r   const res = await fetch('/api/ai/dracin', {\r     method: 'POST',\r     headers: { 'Content-Type': 'application/json' },\r     body: JSON.stringify({ \r       \"text\": \"Halo di sini soume\",\r       \"music\": true \r     })\r   });\r   const data = await res.json();\r   console.log(data);\r }",
       "params": [
         {
           "name": "text",
@@ -121,7 +121,7 @@
       "method": "POST",
       "path": "/api/ai/flux",
       "responseType": "json",
-      "example": "// Contoh penggunaan (Membaca stream SSE di client)\n async function generateImage() {\n   const response = await fetch('/api/ai/flux', {\n     method: 'POST',\n     headers: { 'Content-Type': 'application/json' },\n     body: JSON.stringify({ \n       \"prompt\": \"Cyberpunk city with neon lights, realistic style\" \n     })\n   });\n \n   const reader = response.body.getReader();\n   const decoder = new TextDecoder();\n   \n   while (true) {\n     const { done, value } = await reader.read();\n     if (done) break;\n     const text = decoder.decode(value);\n     console.log(\"Stream:\", text);\n     \n     if(text.includes('[true]')) {\n        const resultUrl = text.replace('[true]', '').trim();\n        console.log(\"Result JSON URL:\", resultUrl);\n        // fetch(resultUrl).then(res => res.json()).then(console.log);\n     }\n   }\n }\n \n generateImage();",
+      "example": "// Contoh penggunaan (Membaca stream SSE di client)\r async function generateImage() {\r   const response = await fetch('/api/ai/flux', {\r     method: 'POST',\r     headers: { 'Content-Type': 'application/json' },\r     body: JSON.stringify({ \r       \"prompt\": \"Cyberpunk city with neon lights, realistic style\" \r     })\r   });\r \r   const reader = response.body.getReader();\r   const decoder = new TextDecoder();\r   \r   while (true) {\r     const { done, value } = await reader.read();\r     if (done) break;\r     const text = decoder.decode(value);\r     console.log(\"Stream:\", text);\r     \r     if(text.includes('[true]')) {\r        const resultUrl = text.replace('[true]', '').trim();\r        console.log(\"Result JSON URL:\", resultUrl);\r        // fetch(resultUrl).then(res => res.json()).then(console.log);\r     }\r   }\r }\r \r generateImage();",
       "params": [
         {
           "name": "prompt",
@@ -139,7 +139,7 @@
       "method": "POST",
       "path": "/api/ai/gemini",
       "responseType": "json",
-      "example": "async function chatGemini() {\n   const response = await fetch('/api/ai/gemini', {\n     method: 'POST',\n     headers: { 'Content-Type': 'application/json' },\n     body: JSON.stringify({ \"prompt\": \"Halo Gemini!\" })\n   });\n \n   const data = await response.json();\n   console.log(data);\n }",
+      "example": "async function chatGemini() {\r   const response = await fetch('/api/ai/gemini', {\r     method: 'POST',\r     headers: { 'Content-Type': 'application/json' },\r     body: JSON.stringify({ \"prompt\": \"Halo Gemini!\" })\r   });\r \r   const data = await response.json();\r   console.log(data);\r }",
       "params": [
         {
           "name": "prompt",
@@ -157,7 +157,7 @@
       "method": "POST",
       "path": "/api/ai/gemini-v2",
       "responseType": "json",
-      "example": "async function chatGemini() {\n   const response = await fetch('/api/ai/gemini-v2', {\n     method: 'POST',\n     headers: { 'Content-Type': 'application/json' },\n     body: JSON.stringify({ \"prompt\": \"Halo Gemini!\" })\n   });\n \n   const data = await response.json();\n   console.log(data);\n }",
+      "example": "async function chatGemini() {\r   const response = await fetch('/api/ai/gemini-v2', {\r     method: 'POST',\r     headers: { 'Content-Type': 'application/json' },\r     body: JSON.stringify({ \"prompt\": \"Halo Gemini!\" })\r   });\r \r   const data = await response.json();\r   console.log(data);\r }",
       "params": [
         {
           "name": "prompt",
@@ -175,7 +175,7 @@
       "method": "POST",
       "path": "/api/ai/grok",
       "responseType": "json",
-      "example": "async function chat() {\n   try {\n     const response = await fetch('/api/ai/grok', {\n       method: 'POST',\n       headers: { 'Content-Type': 'application/json' },\n       body: JSON.stringify({ \n         \"message\": \"Siapa pencipta bahasa pemrograman JavaScript?\" \n       })\n     });\n \n     const data = await response.json();\n     console.log(data);\n   } catch (error) {\n     console.error('Error:', error);\n   }\n }\n \n chat();",
+      "example": "async function chat() {\r   try {\r     const response = await fetch('/api/ai/grok', {\r       method: 'POST',\r       headers: { 'Content-Type': 'application/json' },\r       body: JSON.stringify({ \r         \"message\": \"Siapa pencipta bahasa pemrograman JavaScript?\" \r       })\r     });\r \r     const data = await response.json();\r     console.log(data);\r   } catch (error) {\r     console.error('Error:', error);\r   }\r }\r \r chat();",
       "params": [
         {
           "name": "message",
@@ -193,7 +193,7 @@
       "method": "POST",
       "path": "/api/ai/letmegpt",
       "responseType": "json",
-      "example": "async function chat() {\n   const res = await fetch('/api/ai/letmegpt', {\n     method: 'POST',\n     headers: { 'Content-Type': 'application/json' },\n     body: JSON.stringify({ \"message\": \"Siapa namamu?\" })\n   });\n   const data = await res.json();\n   console.log(data);\n }",
+      "example": "async function chat() {\r   const res = await fetch('/api/ai/letmegpt', {\r     method: 'POST',\r     headers: { 'Content-Type': 'application/json' },\r     body: JSON.stringify({ \"message\": \"Siapa namamu?\" })\r   });\r   const data = await res.json();\r   console.log(data);\r }",
       "params": [
         {
           "name": "message",
@@ -211,7 +211,7 @@
       "method": "POST",
       "path": "/api/ai/notegpt",
       "responseType": "json",
-      "example": "async function askNoteGPT() {\n   const response = await fetch('/api/ai/notegpt', {\n     method: 'POST',\n     headers: { 'Content-Type': 'application/json' },\n     body: JSON.stringify({ \n       \"prompt\": \"Jelaskan cara kerja kuantum komputer secara sederhana\",\n       \"model\": \"TA/deepseek-ai/DeepSeek-R1\",\n       \"chat_mode\": \"deep_think\"\n     })\n   });\n \n   const reader = response.body.getReader();\n   const decoder = new TextDecoder();\n   \n   while (true) {\n     const { done, value } = await reader.read();\n     if (done) break;\n     const text = decoder.decode(value);\n     // Format SSE: data: {\"reasoning\": \"...\", \"text\": \"...\"}\n     console.log(text);\n   }\n }",
+      "example": "async function askNoteGPT() {\r   const response = await fetch('/api/ai/notegpt', {\r     method: 'POST',\r     headers: { 'Content-Type': 'application/json' },\r     body: JSON.stringify({ \r       \"prompt\": \"Jelaskan cara kerja kuantum komputer secara sederhana\",\r       \"model\": \"TA/deepseek-ai/DeepSeek-R1\",\r       \"chat_mode\": \"deep_think\"\r     })\r   });\r \r   const reader = response.body.getReader();\r   const decoder = new TextDecoder();\r   \r   while (true) {\r     const { done, value } = await reader.read();\r     if (done) break;\r     const text = decoder.decode(value);\r     // Format SSE: data: {\"reasoning\": \"...\", \"text\": \"...\"}\r     console.log(text);\r   }\r }",
       "params": [
         {
           "name": "prompt",
@@ -237,70 +237,13 @@
       ]
     },
     {
-      "title": "Claude Haiku AI",
-      "summary": "Claude Haiku Chat (Overchat).",
-      "description": "Berinteraksi dengan model Claude Haiku melalui provider Overchat.ai. Memberikan jawaban cerdas dan cepat. Credit: Hazel.",
-      "method": "POST",
-      "path": "/api/ai/overchat",
-      "responseType": "json",
-      "example": "async function askClaude() {\n   const res = await fetch('/api/ai/overchat', {\n     method: 'POST',\n     headers: { 'Content-Type': 'application/json' },\n     body: JSON.stringify({ \"question\": \"Halo Claude!\" })\n   });\n   const data = await res.json();\n   console.log(data.result);\n }",
-      "params": [
-        {
-          "name": "question",
-          "in": "body",
-          "type": "string",
-          "description": "Pertanyaan atau pesan untuk AI.",
-          "required": true
-        }
-      ]
-    },
-    {
-      "title": "puruAI (Time Aware)",
-      "summary": "Advanced AI Gateway by PuruBoy.",
-      "description": "Model AI yang menyadari waktu dan urutan pesan. Mendukung persistensi riwayat (history) per UserID menggunakan Node-cache.",
-      "method": "POST",
-      "path": "/api/ai/puruai",
-      "responseType": "json",
-      "example": "async function chat() {\n   const res = await fetch('/api/ai/puruai', {\n     method: 'POST',\n     headers: { 'Content-Type': 'application/json' },\n     body: JSON.stringify({ \n       \"userid\": \"user-session-001\", \n       \"prompt\": \"Halo, siapa namamu?\",\n       \"model\": \"puruboy-flash\",\n       \"system\": \"Kamu adalah AI asisten dari PuruBoy yang ramah.\"\n     })\n   });\n   const data = await res.json();\n   console.log(data);\n }",
-      "params": [
-        {
-          "name": "userid",
-          "in": "body",
-          "type": "string",
-          "description": "Session ID untuk riwayat pesan persisten.",
-          "required": true
-        },
-        {
-          "name": "prompt",
-          "in": "body",
-          "type": "string",
-          "description": "Pesan dari pengguna.",
-          "required": true
-        },
-        {
-          "name": "model",
-          "in": "body",
-          "type": "string",
-          "description": "Pilihan model: 'puruboy-flash' atau 'puruboy-pro'.",
-          "required": true
-        },
-        {
-          "name": "system",
-          "in": "body",
-          "type": "string",
-          "description": "(Opsional) Instruksi kepribadian dasar AI.",
-          "required": false
-        }
-      ]
-    },
-    {
       "title": "Quillbot AI Chat",
       "summary": "Chat via Quillbot AI (Stream).",
       "description": "Berinteraksi dengan model AI Quillbot yang mendukung streaming response. Berguna untuk menjawab pertanyaan, melakukan parafrase, atau riset teks. Endpoint ini menggunakan Server-Sent Events (SSE).",
       "method": "POST",
       "path": "/api/ai/quillbot",
       "responseType": "json",
-      "example": "// Contoh penggunaan SSE di Client\n async function askQuillbot() {\n   const response = await fetch('/api/ai/quillbot', {\n     method: 'POST',\n     headers: { 'Content-Type': 'application/json' },\n     body: JSON.stringify({ \n       \"message\": \"Apa itu pemrograman fungsional?\"\n     })\n   });\n \n   const reader = response.body.getReader();\n   const decoder = new TextDecoder();\n   \n   while (true) {\n     const { done, value } = await reader.read();\n     if (done) break;\n     const text = decoder.decode(value);\n     console.log(text);\n   }\n }",
+      "example": "// Contoh penggunaan SSE di Client\r async function askQuillbot() {\r   const response = await fetch('/api/ai/quillbot', {\r     method: 'POST',\r     headers: { 'Content-Type': 'application/json' },\r     body: JSON.stringify({ \r       \"message\": \"Apa itu pemrograman fungsional?\"\r     })\r   });\r \r   const reader = response.body.getReader();\r   const decoder = new TextDecoder();\r   \r   while (true) {\r     const { done, value } = await reader.read();\r     if (done) break;\r     const text = decoder.decode(value);\r     console.log(text);\r   }\r }",
       "params": [
         {
           "name": "message",
@@ -318,7 +261,7 @@
       "method": "POST",
       "path": "/api/ai/screenapp",
       "responseType": "json",
-      "example": "async function askImage() {\n   const res = await fetch('/api/ai/screenapp', {\n     method: 'POST',\n     headers: { 'Content-Type': 'application/json' },\n     body: JSON.stringify({\n       \"url\": \"https://puruboy-api.vercel.app/favicon.jpg\",\n       \"question\": \"Jelaskan gambar ini dengan detail\"\n     })\n   });\n   const data = await res.json();\n   console.log(data);\n }",
+      "example": "async function askImage() {\r   const res = await fetch('/api/ai/screenapp', {\r     method: 'POST',\r     headers: { 'Content-Type': 'application/json' },\r     body: JSON.stringify({\r       \"url\": \"https://puruboy-api.vercel.app/favicon.jpg\",\r       \"question\": \"Jelaskan gambar ini dengan detail\"\r     })\r   });\r   const data = await res.json();\r   console.log(data);\r }",
       "params": [
         {
           "name": "url",
@@ -343,7 +286,7 @@
       "method": "POST",
       "path": "/api/ai/svara",
       "responseType": "json",
-      "example": "// Contoh penggunaan\n async function generateSpeech() {\n   try {\n     const response = await fetch('/api/ai/svara', {\n       method: 'POST',\n       headers: { 'Content-Type': 'application/json' },\n       body: JSON.stringify({ \n         \"text\": \"Halo, selamat datang di NextA API.\",\n         \"voice\": \"bella\" \n       })\n     });\n \n     const data = await response.json();\n     console.log(data);\n   } catch (error) {\n     console.error(\"Gagal melakukan permintaan:\", error.message);\n   }\n }",
+      "example": "// Contoh penggunaan\r async function generateSpeech() {\r   try {\r     const response = await fetch('/api/ai/svara', {\r       method: 'POST',\r       headers: { 'Content-Type': 'application/json' },\r       body: JSON.stringify({ \r         \"text\": \"Halo, selamat datang di NextA API.\",\r         \"voice\": \"bella\" \r       })\r     });\r \r     const data = await response.json();\r     console.log(data);\r   } catch (error) {\r     console.error(\"Gagal melakukan permintaan:\", error.message);\r   }\r }",
       "params": [
         {
           "name": "text",
@@ -368,7 +311,7 @@
       "method": "POST",
       "path": "/api/ai/translapp",
       "responseType": "json",
-      "example": "async function processText() {\n   try {\n     const response = await fetch('/api/ai/translapp', {\n       method: 'POST',\n       headers: { 'Content-Type': 'application/json' },\n       body: JSON.stringify({ \n         \"text\": \"Hello, how are you?\",\n         \"module\": \"TRANSLATE\", \n         \"to\": \"jawa\"\n       })\n     });\n \n     const data = await response.json();\n     console.log(data);\n   } catch (error) {\n     console.error('Error:', error);\n   }\n }\n \n processText();",
+      "example": "async function processText() {\r   try {\r     const response = await fetch('/api/ai/translapp', {\r       method: 'POST',\r       headers: { 'Content-Type': 'application/json' },\r       body: JSON.stringify({ \r         \"text\": \"Hello, how are you?\",\r         \"module\": \"TRANSLATE\", \r         \"to\": \"jawa\"\r       })\r     });\r \r     const data = await response.json();\r     console.log(data);\r   } catch (error) {\r     console.error('Error:', error);\r   }\r }\r \r processText();",
       "params": [
         {
           "name": "text",
@@ -407,7 +350,7 @@
       "method": "POST",
       "path": "/api/ai/tsundere",
       "responseType": "json",
-      "example": "async function speakTsundere() {\n   const res = await fetch('/api/ai/tsundere', {\n     method: 'POST',\n     headers: { 'Content-Type': 'application/json' },\n     body: JSON.stringify({ \"text\": \"Bukannya aku menyukaimu ya, dasar baka!\" })\n   });\n   const data = await res.json();\n   console.log(data);\n }",
+      "example": "async function speakTsundere() {\r   const res = await fetch('/api/ai/tsundere', {\r     method: 'POST',\r     headers: { 'Content-Type': 'application/json' },\r     body: JSON.stringify({ \"text\": \"Bukannya aku menyukaimu ya, dasar baka!\" })\r   });\r   const data = await res.json();\r   console.log(data);\r }",
       "params": [
         {
           "name": "text",
@@ -425,7 +368,7 @@
       "method": "POST",
       "path": "/api/ai/unlimited",
       "responseType": "json",
-      "example": "async function chat() {\n   const response = await fetch('/api/ai/unlimited', {\n     method: 'POST',\n     headers: { 'Content-Type': 'application/json' },\n     body: JSON.stringify({ \n       \"message\": \"Buatkan cerita pendek\"\n     })\n   });\n \n   const reader = response.body.getReader();\n   const decoder = new TextDecoder();\n   \n   while (true) {\n     const { done, value } = await reader.read();\n     if (done) break;\n     const text = decoder.decode(value);\n     console.log(text);\n   }\n }",
+      "example": "async function chat() {\r   const response = await fetch('/api/ai/unlimited', {\r     method: 'POST',\r     headers: { 'Content-Type': 'application/json' },\r     body: JSON.stringify({ \r       \"message\": \"Buatkan cerita pendek\"\r     })\r   });\r \r   const reader = response.body.getReader();\r   const decoder = new TextDecoder();\r   \r   while (true) {\r     const { done, value } = await reader.read();\r     if (done) break;\r     const text = decoder.decode(value);\r     console.log(text);\r   }\r }",
       "params": [
         {
           "name": "message",
@@ -445,7 +388,7 @@
       "method": "GET",
       "path": "/api/anime/anichin/detail",
       "responseType": "json",
-      "example": "async function getDetail() {\n   const res = await fetch('/api/anime/anichin/detail?url=/seri/battle-through-the-heavens-season-5/');\n   const data = await res.json();\n   console.log(data);\n }",
+      "example": "async function getDetail() {\r   const res = await fetch('/api/anime/anichin/detail?url=/seri/battle-through-the-heavens-season-5/');\r   const data = await res.json();\r   console.log(data);\r }",
       "params": [
         {
           "name": "url",
@@ -463,7 +406,7 @@
       "method": "GET",
       "path": "/api/anime/anichin/genre",
       "responseType": "json",
-      "example": "async function getByGenre() {\n   const res = await fetch('/api/anime/anichin/genre?slug=fantasy');\n   const data = await res.json();\n   console.log(data);\n }",
+      "example": "async function getByGenre() {\r   const res = await fetch('/api/anime/anichin/genre?slug=fantasy');\r   const data = await res.json();\r   console.log(data);\r }",
       "params": [
         {
           "name": "slug",
@@ -488,7 +431,7 @@
       "method": "GET",
       "path": "/api/anime/anichin/genres",
       "responseType": "json",
-      "example": "async function getGenres() {\n   const res = await fetch('/api/anime/anichin/genres');\n   const data = await res.json();\n   console.log(data);\n }",
+      "example": "async function getGenres() {\r   const res = await fetch('/api/anime/anichin/genres');\r   const data = await res.json();\r   console.log(data);\r }",
       "params": []
     },
     {
@@ -498,7 +441,7 @@
       "method": "GET",
       "path": "/api/anime/anichin/home",
       "responseType": "json",
-      "example": "async function getHome() {\n   const res = await fetch('/api/anime/anichin/home');\n   const data = await res.json();\n   console.log(data);\n }",
+      "example": "async function getHome() {\r   const res = await fetch('/api/anime/anichin/home');\r   const data = await res.json();\r   console.log(data);\r }",
       "params": []
     },
     {
@@ -508,7 +451,7 @@
       "method": "GET",
       "path": "/api/anime/anichin/schedule",
       "responseType": "json",
-      "example": "async function getSchedule() {\n   const res = await fetch('/api/anime/anichin/schedule');\n   const data = await res.json();\n   console.log(data);\n }",
+      "example": "async function getSchedule() {\r   const res = await fetch('/api/anime/anichin/schedule');\r   const data = await res.json();\r   console.log(data);\r }",
       "params": []
     },
     {
@@ -518,7 +461,7 @@
       "method": "GET",
       "path": "/api/anime/anichin/search",
       "responseType": "json",
-      "example": "async function search() {\n   const res = await fetch('/api/anime/anichin/search?q=Btth');\n   const data = await res.json();\n   console.log(data);\n }",
+      "example": "async function search() {\r   const res = await fetch('/api/anime/anichin/search?q=Btth');\r   const data = await res.json();\r   console.log(data);\r }",
       "params": [
         {
           "name": "q",
@@ -543,7 +486,7 @@
       "method": "GET",
       "path": "/api/anime/anichin/stream",
       "responseType": "json",
-      "example": "async function getStream() {\n   const res = await fetch('/api/anime/anichin/stream?url=/battle-through-the-heavens-season-5-episode-01-subtitle-indonesia/');\n   const data = await res.json();\n   console.log(data);\n }",
+      "example": "async function getStream() {\r   const res = await fetch('/api/anime/anichin/stream?url=/battle-through-the-heavens-season-5-episode-01-subtitle-indonesia/');\r   const data = await res.json();\r   console.log(data);\r }",
       "params": [
         {
           "name": "url",
@@ -561,7 +504,7 @@
       "method": "GET",
       "path": "/api/anime/komiku/detail",
       "responseType": "json",
-      "example": "async function getDetail() {\n   const res = await fetch('/api/anime/komiku/detail?url=https://komiku.org/manga/solo-leveling-id/');\n   const data = await res.json();\n   console.log(data);\n }",
+      "example": "async function getDetail() {\r   const res = await fetch('/api/anime/komiku/detail?url=https://komiku.org/manga/solo-leveling-id/');\r   const data = await res.json();\r   console.log(data);\r }",
       "params": [
         {
           "name": "url",
@@ -579,7 +522,7 @@
       "method": "GET",
       "path": "/api/anime/komiku/home",
       "responseType": "json",
-      "example": "async function getUpdates() {\n   const res = await fetch('/api/anime/komiku/home');\n   const data = await res.json();\n   console.log(data);\n }",
+      "example": "async function getUpdates() {\r   const res = await fetch('/api/anime/komiku/home');\r   const data = await res.json();\r   console.log(data);\r }",
       "params": []
     },
     {
@@ -589,7 +532,7 @@
       "method": "GET",
       "path": "/api/anime/komiku/popular",
       "responseType": "json",
-      "example": "async function getPopular() {\n   const res = await fetch('/api/anime/komiku/popular?page=1');\n   const data = await res.json();\n   console.log(data);\n }",
+      "example": "async function getPopular() {\r   const res = await fetch('/api/anime/komiku/popular?page=1');\r   const data = await res.json();\r   console.log(data);\r }",
       "params": [
         {
           "name": "page",
@@ -607,7 +550,7 @@
       "method": "GET",
       "path": "/api/anime/komiku/read",
       "responseType": "json",
-      "example": "async function readChapter() {\n   const res = await fetch('/api/anime/komiku/read?url=https://komiku.org/solo-leveling-ragnarok-chapter-68/');\n   const data = await res.json();\n   console.log(data);\n }",
+      "example": "async function readChapter() {\r   const res = await fetch('/api/anime/komiku/read?url=https://komiku.org/solo-leveling-ragnarok-chapter-68/');\r   const data = await res.json();\r   console.log(data);\r }",
       "params": [
         {
           "name": "url",
@@ -625,7 +568,7 @@
       "method": "GET",
       "path": "/api/anime/komiku/search",
       "responseType": "json",
-      "example": "async function searchKomik() {\n   const res = await fetch('/api/anime/komiku/search?q=Solo Leveling');\n   const data = await res.json();\n   console.log(data);\n }",
+      "example": "async function searchKomik() {\r   const res = await fetch('/api/anime/komiku/search?q=Solo Leveling');\r   const data = await res.json();\r   console.log(data);\r }",
       "params": [
         {
           "name": "q",
@@ -643,7 +586,7 @@
       "method": "GET",
       "path": "/api/anime/mal/genre",
       "responseType": "json",
-      "example": "async function getByGenre() {\n   const res = await fetch('/api/anime/mal/genre?genreId=1');\n   const data = await res.json();\n   console.log(data);\n }",
+      "example": "async function getByGenre() {\r   const res = await fetch('/api/anime/mal/genre?genreId=1');\r   const data = await res.json();\r   console.log(data);\r }",
       "params": [
         {
           "name": "genreId",
@@ -675,7 +618,7 @@
       "method": "GET",
       "path": "/api/anime/mal/ongoing",
       "responseType": "json",
-      "example": "async function getOngoing() {\n   const res = await fetch('/api/anime/mal/ongoing?page=1');\n   const data = await res.json();\n   console.log(data);\n }",
+      "example": "async function getOngoing() {\r   const res = await fetch('/api/anime/mal/ongoing?page=1');\r   const data = await res.json();\r   console.log(data);\r }",
       "params": [
         {
           "name": "page",
@@ -700,7 +643,7 @@
       "method": "GET",
       "path": "/api/anime/mal/popular",
       "responseType": "json",
-      "example": "async function getPopular() {\n   const res = await fetch('/api/anime/mal/popular?page=1');\n   const data = await res.json();\n   console.log(data);\n }",
+      "example": "async function getPopular() {\r   const res = await fetch('/api/anime/mal/popular?page=1');\r   const data = await res.json();\r   console.log(data);\r }",
       "params": [
         {
           "name": "page",
@@ -725,7 +668,7 @@
       "method": "GET",
       "path": "/api/anime/mal/search",
       "responseType": "json",
-      "example": "async function searchMAL() {\n   const res = await fetch('/api/anime/mal/search?q=Naruto');\n   const data = await res.json();\n   console.log(data);\n }",
+      "example": "async function searchMAL() {\r   const res = await fetch('/api/anime/mal/search?q=Naruto');\r   const data = await res.json();\r   console.log(data);\r }",
       "params": [
         {
           "name": "q",
@@ -757,7 +700,7 @@
       "method": "GET",
       "path": "/api/anime/nekokun/detail",
       "responseType": "json",
-      "example": "async function getDetail() {\n   const res = await fetch('/api/anime/nekokun/detail?url=/anime/one-piece/');\n   const data = await res.json();\n   console.log(data);\n }",
+      "example": "async function getDetail() {\r   const res = await fetch('/api/anime/nekokun/detail?url=/anime/one-piece/');\r   const data = await res.json();\r   console.log(data);\r }",
       "params": [
         {
           "name": "url",
@@ -775,7 +718,7 @@
       "method": "GET",
       "path": "/api/anime/nekokun/home",
       "responseType": "json",
-      "example": "async function getHome() {\n   const res = await fetch('/api/anime/nekokun/home?page=1');\n   const data = await res.json();\n   console.log(data);\n }",
+      "example": "async function getHome() {\r   const res = await fetch('/api/anime/nekokun/home?page=1');\r   const data = await res.json();\r   console.log(data);\r }",
       "params": [
         {
           "name": "page",
@@ -793,7 +736,7 @@
       "method": "GET",
       "path": "/api/anime/nekokun/search",
       "responseType": "json",
-      "example": "async function searchAnime() {\n   const res = await fetch('/api/anime/nekokun/search?q=One Piece&page=1');\n   const data = await res.json();\n   console.log(data);\n }",
+      "example": "async function searchAnime() {\r   const res = await fetch('/api/anime/nekokun/search?q=One Piece&page=1');\r   const data = await res.json();\r   console.log(data);\r }",
       "params": [
         {
           "name": "q",
@@ -818,7 +761,7 @@
       "method": "GET",
       "path": "/api/anime/nekokun/stream",
       "responseType": "json",
-      "example": "async function getStream() {\n   const res = await fetch('/api/anime/nekokun/stream?url=/one-piece-episode-1162/');\n   const data = await res.json();\n   console.log(data);\n }",
+      "example": "async function getStream() {\r   const res = await fetch('/api/anime/nekokun/stream?url=/one-piece-episode-1162/');\r   const data = await res.json();\r   console.log(data);\r }",
       "params": [
         {
           "name": "url",
@@ -836,7 +779,7 @@
       "method": "GET",
       "path": "/api/anime/oploverz/detail",
       "responseType": "json",
-      "example": "async function getDetail() {\n   // Gunakan path relatif (lebih stabil) atau full URL\n   const res = await fetch('/api/anime/oploverz/detail?url=/series/spy-x-family-s3');\n   const data = await res.json();\n   console.log(data);\n }",
+      "example": "async function getDetail() {\r   // Gunakan path relatif (lebih stabil) atau full URL\r   const res = await fetch('/api/anime/oploverz/detail?url=/series/spy-x-family-s3');\r   const data = await res.json();\r   console.log(data);\r }",
       "params": [
         {
           "name": "url",
@@ -854,7 +797,7 @@
       "method": "GET",
       "path": "/api/anime/oploverz/home",
       "responseType": "json",
-      "example": "async function getHome() {\n   const res = await fetch('/api/anime/oploverz/home');\n   const data = await res.json();\n   console.log(data);\n }\n \n getHome();",
+      "example": "async function getHome() {\r   const res = await fetch('/api/anime/oploverz/home');\r   const data = await res.json();\r   console.log(data);\r }\r \r getHome();",
       "params": []
     },
     {
@@ -864,7 +807,7 @@
       "method": "GET",
       "path": "/api/anime/oploverz/schedule",
       "responseType": "json",
-      "example": "async function getSchedule() {\n   const res = await fetch('/api/anime/oploverz/schedule');\n   const data = await res.json();\n   console.log(data);\n }",
+      "example": "async function getSchedule() {\r   const res = await fetch('/api/anime/oploverz/schedule');\r   const data = await res.json();\r   console.log(data);\r }",
       "params": []
     },
     {
@@ -874,7 +817,7 @@
       "method": "GET",
       "path": "/api/anime/oploverz/search",
       "responseType": "json",
-      "example": "async function search() {\n   const res = await fetch('/api/anime/oploverz/search?q=Naruto');\n   const data = await res.json();\n   console.log(data);\n }",
+      "example": "async function search() {\r   const res = await fetch('/api/anime/oploverz/search?q=Naruto');\r   const data = await res.json();\r   console.log(data);\r }",
       "params": [
         {
           "name": "q",
@@ -892,7 +835,7 @@
       "method": "GET",
       "path": "/api/anime/oploverz/stream",
       "responseType": "json",
-      "example": "async function getStream() {\n   // Gunakan path relatif\n   const res = await fetch('/api/anime/oploverz/stream?url=/series/spy-x-family-s3/episode/1');\n   const data = await res.json();\n   console.log(data);\n }",
+      "example": "async function getStream() {\r   // Gunakan path relatif\r   const res = await fetch('/api/anime/oploverz/stream?url=/series/spy-x-family-s3/episode/1');\r   const data = await res.json();\r   console.log(data);\r }",
       "params": [
         {
           "name": "url",
@@ -910,7 +853,7 @@
       "method": "GET",
       "path": "/api/anime/samehadaku/detail",
       "responseType": "json",
-      "example": "async function getDetail() {\n   const res = await fetch('/api/anime/samehadaku/detail?url=/anime/golden-kamuy-final-season/');\n   const data = await res.json();\n   console.log(data);\n }",
+      "example": "async function getDetail() {\r   const res = await fetch('/api/anime/samehadaku/detail?url=/anime/golden-kamuy-final-season/');\r   const data = await res.json();\r   console.log(data);\r }",
       "params": [
         {
           "name": "url",
@@ -928,7 +871,7 @@
       "method": "GET",
       "path": "/api/anime/samehadaku/embed",
       "responseType": "json",
-      "example": "async function getEmbed() {\n   const res = await fetch('/api/anime/samehadaku/embed?post=47702&nume=2&type=schtml');\n   const data = await res.json();\n   console.log(data);\n }",
+      "example": "async function getEmbed() {\r   const res = await fetch('/api/anime/samehadaku/embed?post=47702&nume=2&type=schtml');\r   const data = await res.json();\r   console.log(data);\r }",
       "params": [
         {
           "name": "post",
@@ -967,7 +910,7 @@
       "method": "GET",
       "path": "/api/anime/samehadaku/home",
       "responseType": "json",
-      "example": "async function getHome() {\n   const res = await fetch('/api/anime/samehadaku/home');\n   const data = await res.json();\n   console.log(data);\n }",
+      "example": "async function getHome() {\r   const res = await fetch('/api/anime/samehadaku/home');\r   const data = await res.json();\r   console.log(data);\r }",
       "params": []
     },
     {
@@ -977,7 +920,7 @@
       "method": "GET",
       "path": "/api/anime/samehadaku/list",
       "responseType": "json",
-      "example": "async function getList() {\n   const res = await fetch('/api/anime/samehadaku/list?page=1');\n   const data = await res.json();\n   console.log(data);\n }",
+      "example": "async function getList() {\r   const res = await fetch('/api/anime/samehadaku/list?page=1');\r   const data = await res.json();\r   console.log(data);\r }",
       "params": [
         {
           "name": "page",
@@ -995,7 +938,7 @@
       "method": "GET",
       "path": "/api/anime/samehadaku/schedule",
       "responseType": "json",
-      "example": "async function getSchedule() {\n   const res = await fetch('/api/anime/samehadaku/schedule');\n   const data = await res.json();\n   console.log(data);\n }",
+      "example": "async function getSchedule() {\r   const res = await fetch('/api/anime/samehadaku/schedule');\r   const data = await res.json();\r   console.log(data);\r }",
       "params": []
     },
     {
@@ -1005,7 +948,7 @@
       "method": "GET",
       "path": "/api/anime/samehadaku/search",
       "responseType": "json",
-      "example": "async function search() {\n   const res = await fetch('/api/anime/samehadaku/search?q=Boruto');\n   const data = await res.json();\n   console.log(data);\n }",
+      "example": "async function search() {\r   const res = await fetch('/api/anime/samehadaku/search?q=Boruto');\r   const data = await res.json();\r   console.log(data);\r }",
       "params": [
         {
           "name": "q",
@@ -1023,7 +966,7 @@
       "method": "GET",
       "path": "/api/anime/samehadaku/stream",
       "responseType": "json",
-      "example": "async function getStream() {\n   const res = await fetch('/api/anime/samehadaku/stream?url=/golden-kamuy-final-season-episode-1/');\n   const data = await res.json();\n   console.log(data);\n }",
+      "example": "async function getStream() {\r   const res = await fetch('/api/anime/samehadaku/stream?url=/golden-kamuy-final-season-episode-1/');\r   const data = await res.json();\r   console.log(data);\r }",
       "params": [
         {
           "name": "url",
@@ -1043,7 +986,7 @@
       "method": "POST",
       "path": "/api/downloader/fbdl",
       "responseType": "json",
-      "example": "async function downloadFB() {\n   try {\n     const response = await fetch('/api/downloader/fbdl', {\n       method: 'POST',\n       headers: { 'Content-Type': 'application/json' },\n       body: JSON.stringify({ \n         \"url\": \"https://www.facebook.com/reel/861262849136029/\" \n       })\n     });\n \n     const data = await response.json();\n     console.log(data);\n   } catch (error) {\n     console.error('Error:', error.message);\n   }\n }\n \n downloadFB();",
+      "example": "async function downloadFB() {\r   try {\r     const response = await fetch('/api/downloader/fbdl', {\r       method: 'POST',\r       headers: { 'Content-Type': 'application/json' },\r       body: JSON.stringify({ \r         \"url\": \"https://www.facebook.com/reel/861262849136029/\" \r       })\r     });\r \r     const data = await response.json();\r     console.log(data);\r   } catch (error) {\r     console.error('Error:', error.message);\r   }\r }\r \r downloadFB();",
       "params": [
         {
           "name": "url",
@@ -1061,7 +1004,7 @@
       "method": "POST",
       "path": "/api/downloader/instagram",
       "responseType": "json",
-      "example": "async function downloadIg() {\n   const res = await fetch('/api/downloader/instagram', {\n     method: 'POST',\n     headers: { 'Content-Type': 'application/json' },\n     body: JSON.stringify({ \"url\": \"https://www.instagram.com/reel/DOxOvd9jz6f/\" })\n   });\n   const data = await res.json();\n   console.log(data);\n }",
+      "example": "async function downloadIg() {\r   const res = await fetch('/api/downloader/instagram', {\r     method: 'POST',\r     headers: { 'Content-Type': 'application/json' },\r     body: JSON.stringify({ \"url\": \"https://www.instagram.com/reel/DOxOvd9jz6f/\" })\r   });\r   const data = await res.json();\r   console.log(data);\r }",
       "params": [
         {
           "name": "url",
@@ -1079,7 +1022,7 @@
       "method": "POST",
       "path": "/api/downloader/savetube",
       "responseType": "json",
-      "example": "async function download() {\n   const res = await fetch('/api/downloader/savetube', {\n     method: 'POST',\n     headers: { 'Content-Type': 'application/json' },\n     body: JSON.stringify({ \n       \"url\": \"https://www.youtube.com/watch?v=Fmf-G9fpwto\",\n       \"quality\": \"128\",\n       \"type\": \"audio\"\n     })\n   });\n   const data = await res.json();\n   console.log(data);\n }",
+      "example": "async function download() {\r   const res = await fetch('/api/downloader/savetube', {\r     method: 'POST',\r     headers: { 'Content-Type': 'application/json' },\r     body: JSON.stringify({ \r       \"url\": \"https://www.youtube.com/watch?v=Fmf-G9fpwto\",\r       \"quality\": \"128\",\r       \"type\": \"audio\"\r     })\r   });\r   const data = await res.json();\r   console.log(data);\r }",
       "params": [
         {
           "name": "url",
@@ -1111,7 +1054,7 @@
       "method": "POST",
       "path": "/api/downloader/snaptik",
       "responseType": "json",
-      "example": "async function download() {\n   const res = await fetch('/api/downloader/snaptik', {\n     method: 'POST',\n     headers: { 'Content-Type': 'application/json' },\n     body: JSON.stringify({ \"url\": \"https://www.tiktok.com/@brilionet/video/7483341650115267847\" })\n   });\n   const data = await res.json();\n   console.log(data);\n }",
+      "example": "async function download() {\r   const res = await fetch('/api/downloader/snaptik', {\r     method: 'POST',\r     headers: { 'Content-Type': 'application/json' },\r     body: JSON.stringify({ \"url\": \"https://www.tiktok.com/@brilionet/video/7483341650115267847\" })\r   });\r   const data = await res.json();\r   console.log(data);\r }",
       "params": [
         {
           "name": "url",
@@ -1123,31 +1066,13 @@
       ]
     },
     {
-      "title": "SoundCloud DL",
-      "summary": "Download lagu dari SoundCloud.",
-      "description": "Mengunduh file audio (MP3) dari SoundCloud menggunakan layanan pihak ketiga. Endpoint ini mengembalikan judul lagu dan URL unduhan langsung.",
-      "method": "POST",
-      "path": "/api/downloader/soundcloud",
-      "responseType": "json",
-      "example": "async function downloadSC() {\n   try {\n     const response = await fetch('/api/downloader/soundcloud', {\n       method: 'POST',\n       headers: { 'Content-Type': 'application/json' },\n       body: JSON.stringify({ \n         \"url\": \"https://soundcloud.com/marissa-puteri/dj-the-drum-x-ya-odna-tik-tok\" \n       })\n     });\n \n     const data = await response.json();\n     console.log(data);\n   } catch (error) {\n     console.error('Error:', error.message);\n   }\n }\n \n downloadSC();",
-      "params": [
-        {
-          "name": "url",
-          "in": "body",
-          "type": "string",
-          "description": "URL lagu SoundCloud yang ingin diunduh.",
-          "required": true
-        }
-      ]
-    },
-    {
       "title": "SoundCloud DL V2",
       "summary": "SoundCloud Downloader V2 (Direct).",
       "description": "Mengunduh lagu dari SoundCloud menggunakan metode direct scraping (Client ID Extraction). Lebih stabil dan cepat.",
       "method": "POST",
       "path": "/api/downloader/soundcloud-v2",
       "responseType": "json",
-      "example": "async function downloadSC() {\n   const res = await fetch('/api/downloader/soundcloud-v2', {\n     method: 'POST',\n     headers: { 'Content-Type': 'application/json' },\n     body: JSON.stringify({ \n       \"url\": \"https://soundcloud.com/tyo-rizki-413604039/dj-ya-odna-x-the-drum-breakbeat-andra-fvnky-rmx\" \n     })\n   });\n   const data = await res.json();\n   console.log(data);\n }",
+      "example": "async function downloadSC() {\r   const res = await fetch('/api/downloader/soundcloud-v2', {\r     method: 'POST',\r     headers: { 'Content-Type': 'application/json' },\r     body: JSON.stringify({ \r       \"url\": \"https://soundcloud.com/tyo-rizki-413604039/dj-ya-odna-x-the-drum-breakbeat-andra-fvnky-rmx\" \r     })\r   });\r   const data = await res.json();\r   console.log(data);\r }",
       "params": [
         {
           "name": "url",
@@ -1165,7 +1090,7 @@
       "method": "POST",
       "path": "/api/downloader/spotify",
       "responseType": "json",
-      "example": "async function dlSpotify() {\n   const res = await fetch('/api/downloader/spotify', {\n     method: 'POST',\n     headers: { 'Content-Type': 'application/json' },\n     body: JSON.stringify({ \n       \"url\": \"https://open.spotify.com/track/0Bui3Ojn2UWcIWMDEMZSap\" \n     })\n   });\n   const data = await res.json();\n   console.log(data);\n }",
+      "example": "async function dlSpotify() {\r   const res = await fetch('/api/downloader/spotify', {\r     method: 'POST',\r     headers: { 'Content-Type': 'application/json' },\r     body: JSON.stringify({ \r       \"url\": \"https://open.spotify.com/track/0Bui3Ojn2UWcIWMDEMZSap\" \r     })\r   });\r   const data = await res.json();\r   console.log(data);\r }",
       "params": [
         {
           "name": "url",
@@ -1183,7 +1108,7 @@
       "method": "POST",
       "path": "/api/downloader/tiktok",
       "responseType": "json",
-      "example": "// Contoh penggunaan\n async function downloadTikTok() {\n   try {\n     const response = await fetch('/api/downloader/tiktok', {\n       method: 'POST',\n       headers: { 'Content-Type': 'application/json' },\n       // PENTING: Gunakan format JSON valid (key dengan kutip ganda) agar Auto Fill berfungsi\n       body: JSON.stringify({ \"url\": \"https://www.tiktok.com/@brilionet/video/7483341650115267847\" })\n     });\n \n     const data = await response.json();\n     console.log(data);\n   } catch (error) {\n     console.error('Error:', error.message);\n   }\n }\n \n downloadTikTok();",
+      "example": "// Contoh penggunaan\r async function downloadTikTok() {\r   try {\r     const response = await fetch('/api/downloader/tiktok', {\r       method: 'POST',\r       headers: { 'Content-Type': 'application/json' },\r       // PENTING: Gunakan format JSON valid (key dengan kutip ganda) agar Auto Fill berfungsi\r       body: JSON.stringify({ \"url\": \"https://www.tiktok.com/@brilionet/video/7483341650115267847\" })\r     });\r \r     const data = await response.json();\r     console.log(data);\r   } catch (error) {\r     console.error('Error:', error.message);\r   }\r }\r \r downloadTikTok();",
       "params": [
         {
           "name": "url",
@@ -1201,7 +1126,7 @@
       "method": "POST",
       "path": "/api/downloader/tiktok-v2",
       "responseType": "json",
-      "example": "async function download() {\n   const res = await fetch('/api/downloader/tiktok-v2', {\n     method: 'POST',\n     headers: { 'Content-Type': 'application/json' },\n     body: JSON.stringify({ \"url\": \"https://www.tiktok.com/@alenkainventra/video/7351044913112321288\" })\n   });\n   const data = await res.json();\n   console.log(data);\n }",
+      "example": "async function download() {\r   const res = await fetch('/api/downloader/tiktok-v2', {\r     method: 'POST',\r     headers: { 'Content-Type': 'application/json' },\r     body: JSON.stringify({ \"url\": \"https://www.tiktok.com/@alenkainventra/video/7351044913112321288\" })\r   });\r   const data = await res.json();\r   console.log(data);\r }",
       "params": [
         {
           "name": "url",
@@ -1219,7 +1144,7 @@
       "method": "POST",
       "path": "/api/downloader/x",
       "responseType": "json",
-      "example": "async function downloadX() {\n   const res = await fetch('/api/downloader/x', {\n     method: 'POST',\n     headers: { 'Content-Type': 'application/json' },\n     body: JSON.stringify({ \"url\": \"https://x.com/elsyandria/status/1218385778880831488\" })\n   });\n   const data = await res.json();\n   console.log(data);\n }",
+      "example": "async function downloadX() {\r   const res = await fetch('/api/downloader/x', {\r     method: 'POST',\r     headers: { 'Content-Type': 'application/json' },\r     body: JSON.stringify({ \"url\": \"https://x.com/elsyandria/status/1218385778880831488\" })\r   });\r   const data = await res.json();\r   console.log(data);\r }",
       "params": [
         {
           "name": "url",
@@ -1237,7 +1162,7 @@
       "method": "POST",
       "path": "/api/downloader/youtube",
       "responseType": "json",
-      "example": "async function dl() {\n   const res = await fetch('/api/downloader/youtube', {\n     method: 'POST',\n     headers: { 'Content-Type': 'application/json' },\n     body: JSON.stringify({ \"url\": \"https://www.youtube.com/watch?v=Fmf-G9fpwto\" })\n   });\n   const data = await res.json();\n   console.log(data);\n }",
+      "example": "async function dl() {\r   const res = await fetch('/api/downloader/youtube', {\r     method: 'POST',\r     headers: { 'Content-Type': 'application/json' },\r     body: JSON.stringify({ \"url\": \"https://www.youtube.com/watch?v=Fmf-G9fpwto\" })\r   });\r   const data = await res.json();\r   console.log(data);\r }",
       "params": [
         {
           "name": "url",
@@ -1255,7 +1180,7 @@
       "method": "POST",
       "path": "/api/downloader/ytmp3",
       "responseType": "json",
-      "example": "async function downloadMp3() {\n   const res = await fetch('/api/downloader/ytmp3', {\n     method: 'POST',\n     headers: { 'Content-Type': 'application/json' },\n     body: JSON.stringify({ \"url\": \"https://www.youtube.com/watch?v=dQw4w9WgXcQ\" })\n   });\n   const data = await res.json();\n   console.log(data);\n }",
+      "example": "async function downloadMp3() {\r   const res = await fetch('/api/downloader/ytmp3', {\r     method: 'POST',\r     headers: { 'Content-Type': 'application/json' },\r     body: JSON.stringify({ \"url\": \"https://www.youtube.com/watch?v=dQw4w9WgXcQ\" })\r   });\r   const data = await res.json();\r   console.log(data);\r }",
       "params": [
         {
           "name": "url",
@@ -1294,7 +1219,7 @@
       "method": "GET",
       "path": "/api/meme/lahelu",
       "responseType": "json",
-      "example": "async function getMemes() {\n   const res = await fetch('/api/meme/lahelu');\n   const data = await res.json();\n   console.log(data);\n }",
+      "example": "async function getMemes() {\r   const res = await fetch('/api/meme/lahelu');\r   const data = await res.json();\r   console.log(data);\r }",
       "params": [
         {
           "name": "page",
@@ -1312,7 +1237,7 @@
       "method": "POST",
       "path": "/api/meme/uburubur",
       "responseType": "json",
-      "example": "async function generateMeme() {\n   const res = await fetch('/api/meme/uburubur', {\n     method: 'POST',\n     headers: { 'Content-Type': 'application/json' },\n     body: JSON.stringify({\n       \"bgUrl\": \"https://www.puruboy.kozow.com/favicon.jpg\",\n       \"humanUrl\": \"https://png.pngtree.com/png-clipart/20240412/original/pngtree-prabowo-subianto-png-image_14789437.png\",\n       \"brand\": \"INFO PENTING\",\n       \"title\": \"UBUR UBUR\",\n       \"slogan\": \"Ikan hiu makan tomat.\",\n       \"promo\": \"Makan nasi | Rp5.000\\nMakan angin | Gratis\",\n       \"wm\": \"@PuruBoy-API\"\n     })\n   });\n   \n   const reader = res.body.getReader();\n   const decoder = new TextDecoder();\n   while (true) {\n     const { done, value } = await reader.read();\n     if (done) break;\n     console.log(decoder.decode(value));\n   }\n }",
+      "example": "async function generateMeme() {\r   const res = await fetch('/api/meme/uburubur', {\r     method: 'POST',\r     headers: { 'Content-Type': 'application/json' },\r     body: JSON.stringify({\r       \"bgUrl\": \"https://www.puruboy.kozow.com/favicon.jpg\",\r       \"humanUrl\": \"https://png.pngtree.com/png-clipart/20240412/original/pngtree-prabowo-subianto-png-image_14789437.png\",\r       \"brand\": \"INFO PENTING\",\r       \"title\": \"UBUR UBUR\",\r       \"slogan\": \"Ikan hiu makan tomat.\",\r       \"promo\": \"Makan nasi | Rp5.000\\nMakan angin | Gratis\",\r       \"wm\": \"@PuruBoy-API\"\r     })\r   });\r   \r   const reader = res.body.getReader();\r   const decoder = new TextDecoder();\r   while (true) {\r     const { done, value } = await reader.read();\r     if (done) break;\r     console.log(decoder.decode(value));\r   }\r }",
       "params": [
         {
           "name": "bgUrl",
@@ -1374,7 +1299,7 @@
       "method": "GET",
       "path": "/api/play/soundcloud",
       "responseType": "json",
-      "example": "async function play() {\n   const res = await fetch('/api/play/soundcloud?q=dj+ya+odna');\n   const data = await res.json();\n   console.log(data);\n }",
+      "example": "async function play() {\r   const res = await fetch('/api/play/soundcloud?q=dj+ya+odna');\r   const data = await res.json();\r   console.log(data);\r }",
       "params": [
         {
           "name": "q",
@@ -1394,7 +1319,7 @@
       "method": "GET",
       "path": "/api/search/lahelu",
       "responseType": "json",
-      "example": "async function searchMemes() {\n   const res = await fetch('/api/search/lahelu?q=kucing');\n   const data = await res.json();\n   console.log(data);\n }",
+      "example": "async function searchMemes() {\r   const res = await fetch('/api/search/lahelu?q=kucing');\r   const data = await res.json();\r   console.log(data);\r }",
       "params": [
         {
           "name": "q",
@@ -1419,7 +1344,7 @@
       "method": "GET",
       "path": "/api/search/lyrics",
       "responseType": "json",
-      "example": "async function getLyrics() {\n   const res = await fetch('/api/search/lyrics?q=Alan Walker Faded');\n   const data = await res.json();\n   console.log(data);\n }",
+      "example": "async function getLyrics() {\r   const res = await fetch('/api/search/lyrics?q=Alan Walker Faded');\r   const data = await res.json();\r   console.log(data);\r }",
       "params": [
         {
           "name": "q",
@@ -1437,7 +1362,7 @@
       "method": "GET",
       "path": "/api/search/pinterest",
       "responseType": "json",
-      "example": "async function pinterestSearch() {\n   try {\n     const res = await fetch('/api/search/pinterest?q=Anime Wallpaper');\n     const data = await res.json();\n     console.log(data);\n   } catch (e) {\n     console.error(e);\n   }\n }",
+      "example": "async function pinterestSearch() {\r   try {\r     const res = await fetch('/api/search/pinterest?q=Anime Wallpaper');\r     const data = await res.json();\r     console.log(data);\r   } catch (e) {\r     console.error(e);\r   }\r }",
       "params": [
         {
           "name": "q",
@@ -1455,7 +1380,7 @@
       "method": "GET",
       "path": "/api/search/soundcloud",
       "responseType": "json",
-      "example": "// Contoh penggunaan\n async function searchSoundCloud() {\n   try {\n     const response = await fetch('/api/search/soundcloud?q=lofi&limit=5');\n     const data = await response.json();\n     console.log(data);\n   } catch (error) {\n     console.error('Error:', error);\n   }\n }\n \n searchSoundCloud();",
+      "example": "// Contoh penggunaan\r async function searchSoundCloud() {\r   try {\r     const response = await fetch('/api/search/soundcloud?q=lofi&limit=5');\r     const data = await response.json();\r     console.log(data);\r   } catch (error) {\r     console.error('Error:', error);\r   }\r }\r \r searchSoundCloud();",
       "params": [
         {
           "name": "q",
@@ -1480,7 +1405,7 @@
       "method": "GET",
       "path": "/api/search/soundcloud-playlist",
       "responseType": "json",
-      "example": "async function getPlaylist() {\n   const res = await fetch('/api/search/soundcloud-playlist?url=https://soundcloud.com/mhd-rayyan/sets/lagu-pop-indonesia-hits-2026');\n   const data = await res.json();\n   console.log(data);\n }",
+      "example": "async function getPlaylist() {\r   const res = await fetch('/api/search/soundcloud-playlist?url=https://soundcloud.com/mhd-rayyan/sets/lagu-pop-indonesia-hits-2026');\r   const data = await res.json();\r   console.log(data);\r }",
       "params": [
         {
           "name": "url",
@@ -1498,7 +1423,7 @@
       "method": "GET",
       "path": "/api/search/suggest",
       "responseType": "json",
-      "example": "async function getSuggestions() {\n   const res = await fetch('/api/search/suggest?q=apa+itu');\n   const data = await res.json();\n   console.log(data.result);\n }",
+      "example": "async function getSuggestions() {\r   const res = await fetch('/api/search/suggest?q=apa+itu');\r   const data = await res.json();\r   console.log(data.result);\r }",
       "params": [
         {
           "name": "q",
@@ -1516,7 +1441,7 @@
       "method": "GET",
       "path": "/api/search/yahoo",
       "responseType": "json",
-      "example": "async function searchYahoo() {\n   const res = await fetch('/api/search/yahoo?q=berita+terkini');\n   const data = await res.json();\n   console.log(data);\n }",
+      "example": "async function searchYahoo() {\r   const res = await fetch('/api/search/yahoo?q=berita+terkini');\r   const data = await res.json();\r   console.log(data);\r }",
       "params": [
         {
           "name": "q",
@@ -1534,7 +1459,7 @@
       "method": "GET",
       "path": "/api/search/yahoo-soundcloud",
       "responseType": "json",
-      "example": "async function search() {\n   const res = await fetch('/api/search/yahoo-soundcloud?q=dj+ya+odna');\n   const data = await res.json();\n   console.log(data);\n }",
+      "example": "async function search() {\r   const res = await fetch('/api/search/yahoo-soundcloud?q=dj+ya+odna');\r   const data = await res.json();\r   console.log(data);\r }",
       "params": [
         {
           "name": "q",
@@ -1559,7 +1484,7 @@
       "method": "GET",
       "path": "/api/search/youtube",
       "responseType": "json",
-      "example": "async function searchYouTube() {\n   const res = await fetch('/api/search/youtube?q=DJ ya odna');\n   const data = await res.json();\n   console.log(data);\n }",
+      "example": "async function searchYouTube() {\r   const res = await fetch('/api/search/youtube?q=DJ ya odna');\r   const data = await res.json();\r   console.log(data);\r }",
       "params": [
         {
           "name": "q",
@@ -1579,7 +1504,7 @@
       "method": "POST",
       "path": "/api/tools/audio2text",
       "responseType": "json",
-      "example": "async function transcribe() {\n   const res = await fetch('/api/tools/audio2text', {\n     method: 'POST',\n     headers: { 'Content-Type': 'application/json' },\n     body: JSON.stringify({ \"url\": \"https://puruboy-api.vercel.app/example.mp3\" })\n   });\n   const data = await res.json();\n   console.log(data.result.text);\n }",
+      "example": "async function transcribe() {\r   const res = await fetch('/api/tools/audio2text', {\r     method: 'POST',\r     headers: { 'Content-Type': 'application/json' },\r     body: JSON.stringify({ \"url\": \"https://puruboy-api.vercel.app/example.mp3\" })\r   });\r   const data = await res.json();\r   console.log(data.result.text);\r }",
       "params": [
         {
           "name": "url",
@@ -1597,7 +1522,7 @@
       "method": "POST",
       "path": "/api/tools/audioedit",
       "responseType": "json",
-      "example": "async function editAudio() {\n   const res = await fetch('/api/tools/audioedit', {\n     method: 'POST',\n     headers: { 'Content-Type': 'application/json' },\n     body: JSON.stringify({ \n       \"url\": \"https://puruboy-api.vercel.app/example.mp4\",\n       \"effect\": \"nightcore\"\n     })\n   });\n   const data = await res.json();\n   console.log(data);\n }",
+      "example": "async function editAudio() {\r   const res = await fetch('/api/tools/audioedit', {\r     method: 'POST',\r     headers: { 'Content-Type': 'application/json' },\r     body: JSON.stringify({ \r       \"url\": \"https://puruboy-api.vercel.app/example.mp4\",\r       \"effect\": \"nightcore\"\r     })\r   });\r   const data = await res.json();\r   console.log(data);\r }",
       "params": [
         {
           "name": "url",
@@ -1622,7 +1547,7 @@
       "method": "POST",
       "path": "/api/tools/autoclip",
       "responseType": "json",
-      "example": "async function generateClip() {\n   const res = await fetch('/api/tools/autoclip', {\n     method: 'POST',\n     headers: { 'Content-Type': 'application/json' },\n     body: JSON.stringify({ \n       \"url\": \"https://github.com/purujawa06-bot/My-db/raw/refs/heads/main/video/videoplayback.mp4\" \n     })\n   });\n   const data = await res.json();\n   console.log(data);\n }",
+      "example": "async function generateClip() {\r   const res = await fetch('/api/tools/autoclip', {\r     method: 'POST',\r     headers: { 'Content-Type': 'application/json' },\r     body: JSON.stringify({ \r       \"url\": \"https://github.com/purujawa06-bot/My-db/raw/refs/heads/main/video/videoplayback.mp4\" \r     })\r   });\r   const data = await res.json();\r   console.log(data);\r }",
       "params": [
         {
           "name": "url",
@@ -1640,7 +1565,7 @@
       "method": "POST",
       "path": "/api/tools/brat",
       "responseType": "json",
-      "example": "async function createBrat() {\n   const res = await fetch('/api/tools/brat', {\n     method: 'POST',\n     headers: { 'Content-Type': 'application/json' },\n     body: JSON.stringify({ \"text\": \"hai kamu siapa sih😈\" })\n   });\n   const data = await res.json();\n   console.log(data);\n }",
+      "example": "async function createBrat() {\r   const res = await fetch('/api/tools/brat', {\r     method: 'POST',\r     headers: { 'Content-Type': 'application/json' },\r     body: JSON.stringify({ \"text\": \"hai kamu siapa sih😈\" })\r   });\r   const data = await res.json();\r   console.log(data);\r }",
       "params": [
         {
           "name": "text",
@@ -1658,7 +1583,7 @@
       "method": "POST",
       "path": "/api/tools/dubbing",
       "responseType": "json",
-      "example": "async function startDubbing() {\n   const res = await fetch('/api/tools/dubbing', {\n     method: 'POST',\n     headers: { 'Content-Type': 'application/json' },\n     body: JSON.stringify({ \n       \"url\": \"https://github.com/purujawa06-bot/My-db/raw/refs/heads/main/video/english-conversation-have-a-coffee-with-tim-shorts-ytshorts.savetube.vip.mp4\",\n       \"voice\": \"id-ID\",\n       \"prompt\": \"Santai Dan Gaul Bro\"\n     })\n   });\n   const data = await res.json();\n   console.log(data);\n }",
+      "example": "async function startDubbing() {\r   const res = await fetch('/api/tools/dubbing', {\r     method: 'POST',\r     headers: { 'Content-Type': 'application/json' },\r     body: JSON.stringify({ \r       \"url\": \"https://github.com/purujawa06-bot/My-db/raw/refs/heads/main/video/english-conversation-have-a-coffee-with-tim-shorts-ytshorts.savetube.vip.mp4\",\r       \"voice\": \"id-ID\",\r       \"prompt\": \"Santai Dan Gaul Bro\"\r     })\r   });\r   const data = await res.json();\r   console.log(data);\r }",
       "params": [
         {
           "name": "url",
@@ -1690,7 +1615,7 @@
       "method": "POST",
       "path": "/api/tools/ghibli",
       "responseType": "json",
-      "example": "// Contoh penggunaan SSE\n async function ghibliTransform() {\n   const response = await fetch('/api/tools/ghibli', {\n     method: 'POST',\n     headers: { 'Content-Type': 'application/json' },\n     body: JSON.stringify({ \n        \"url\": \"https://puruboy-api.vercel.app/example.jpg\",\n        \"prompt\": \"Jadikan ghibli\"\n     })\n   });\n   \n   const reader = response.body.getReader();\n   // Read stream...\n }",
+      "example": "// Contoh penggunaan SSE\r async function ghibliTransform() {\r   const response = await fetch('/api/tools/ghibli', {\r     method: 'POST',\r     headers: { 'Content-Type': 'application/json' },\r     body: JSON.stringify({ \r        \"url\": \"https://puruboy-api.vercel.app/example.jpg\",\r        \"prompt\": \"Jadikan ghibli\"\r     })\r   });\r   \r   const reader = response.body.getReader();\r   // Read stream...\r }",
       "params": [
         {
           "name": "url",
@@ -1715,7 +1640,7 @@
       "method": "POST",
       "path": "/api/tools/hdvideo",
       "responseType": "json",
-      "example": "async function makeHD() {\n   const res = await fetch('/api/tools/hdvideo', {\n     method: 'POST',\n     headers: { 'Content-Type': 'application/json' },\n     body: JSON.stringify({ \"url\": \"https://puruboy-api.vercel.app/example.mp4\" })\n   });\n   const data = await res.json();\n   console.log(data);\n }",
+      "example": "async function makeHD() {\r   const res = await fetch('/api/tools/hdvideo', {\r     method: 'POST',\r     headers: { 'Content-Type': 'application/json' },\r     body: JSON.stringify({ \"url\": \"https://puruboy-api.vercel.app/example.mp4\" })\r   });\r   const data = await res.json();\r   console.log(data);\r }",
       "params": [
         {
           "name": "url",
@@ -1733,7 +1658,7 @@
       "method": "POST",
       "path": "/api/tools/imgbb",
       "responseType": "json",
-      "example": "// Contoh penggunaan dengan FormData (Browser)\n const formData = new FormData();\n formData.append('image', fileInput.files[0]);\n \n const res = await fetch('/api/tools/imgbb', {\n   method: 'POST',\n   body: formData\n });\n \n const data = await res.json();\n console.log(data);",
+      "example": "// Contoh penggunaan dengan FormData (Browser)\r const formData = new FormData();\r formData.append('image', fileInput.files[0]);\r \r const res = await fetch('/api/tools/imgbb', {\r   method: 'POST',\r   body: formData\r });\r \r const data = await res.json();\r console.log(data);",
       "params": [
         {
           "name": "image",
@@ -1751,7 +1676,7 @@
       "method": "POST",
       "path": "/api/tools/m3u8",
       "responseType": "json",
-      "example": "async function convertM3U8() {\n   const res = await fetch('/api/tools/m3u8', {\n     method: 'POST',\n     headers: { 'Content-Type': 'application/json' },\n     body: JSON.stringify({ \"url\": \"https://cdn.jwplayer.com/manifests/pZxWPRg4.m3u8\" })\n   });\n   \n   const reader = res.body.getReader();\n   const decoder = new TextDecoder();\n   while (true) {\n     const { done, value } = await reader.read();\n     if (done) break;\n     console.log(decoder.decode(value));\n   }\n }",
+      "example": "async function convertM3U8() {\r   const res = await fetch('/api/tools/m3u8', {\r     method: 'POST',\r     headers: { 'Content-Type': 'application/json' },\r     body: JSON.stringify({ \"url\": \"https://cdn.jwplayer.com/manifests/pZxWPRg4.m3u8\" })\r   });\r   \r   const reader = res.body.getReader();\r   const decoder = new TextDecoder();\r   while (true) {\r     const { done, value } = await reader.read();\r     if (done) break;\r     console.log(decoder.decode(value));\r   }\r }",
       "params": [
         {
           "name": "url",
@@ -1769,7 +1694,7 @@
       "method": "GET",
       "path": "/api/tools/media-status",
       "responseType": "json",
-      "example": "async function checkStatus() {\n   const res = await fetch('/api/tools/media-status?jobId=12345abcde');\n   const data = await res.json();\n   console.log(data);\n }",
+      "example": "async function checkStatus() {\r   const res = await fetch('/api/tools/media-status?jobId=12345abcde');\r   const data = await res.json();\r   console.log(data);\r }",
       "params": [
         {
           "name": "jobId",
@@ -1787,7 +1712,7 @@
       "method": "POST",
       "path": "/api/tools/mlbb",
       "responseType": "json",
-      "example": "async function checkML() {\n   const res = await fetch('/api/tools/mlbb', {\n     method: 'POST',\n     headers: { 'Content-Type': 'application/json' },\n     body: JSON.stringify({ \n       \"userId\": \"2002113712\", \n       \"zoneId\": \"19417\" \n     })\n   });\n   const data = await res.json();\n   console.log(data);\n }",
+      "example": "async function checkML() {\r   const res = await fetch('/api/tools/mlbb', {\r     method: 'POST',\r     headers: { 'Content-Type': 'application/json' },\r     body: JSON.stringify({ \r       \"userId\": \"2002113712\", \r       \"zoneId\": \"19417\" \r     })\r   });\r   const data = await res.json();\r   console.log(data);\r }",
       "params": [
         {
           "name": "userId",
@@ -1812,7 +1737,7 @@
       "method": "POST",
       "path": "/api/tools/mp4tomp3",
       "responseType": "json",
-      "example": "async function convert() {\n   const res = await fetch('/api/tools/mp4tomp3', {\n     method: 'POST',\n     headers: { 'Content-Type': 'application/json' },\n     body: JSON.stringify({ \"url\": \"https://puruboy-api.vercel.app/example.mp4\" })\n   });\n   \n   const reader = res.body.getReader();\n   const decoder = new TextDecoder();\n   while (true) {\n     const { done, value } = await reader.read();\n     if (done) break;\n     console.log(decoder.decode(value));\n   }\n }",
+      "example": "async function convert() {\r   const res = await fetch('/api/tools/mp4tomp3', {\r     method: 'POST',\r     headers: { 'Content-Type': 'application/json' },\r     body: JSON.stringify({ \"url\": \"https://puruboy-api.vercel.app/example.mp4\" })\r   });\r   \r   const reader = res.body.getReader();\r   const decoder = new TextDecoder();\r   while (true) {\r     const { done, value } = await reader.read();\r     if (done) break;\r     console.log(decoder.decode(value));\r   }\r }",
       "params": [
         {
           "name": "url",
@@ -1830,7 +1755,7 @@
       "method": "POST",
       "path": "/api/tools/onepage",
       "responseType": "json",
-      "example": "async function createPage() {\n   const res = await fetch('/api/tools/onepage', {\n     method: 'POST',\n     headers: { 'Content-Type': 'application/json' },\n     body: JSON.stringify({ \n       \"name\": \"promo-today\", \n       \"html\": \"<h1>Selamat Datang</h1><p>Ini halaman otomatis.</p>\" \n     })\n   });\n   const data = await res.json();\n   console.log(data);\n }",
+      "example": "async function createPage() {\r   const res = await fetch('/api/tools/onepage', {\r     method: 'POST',\r     headers: { 'Content-Type': 'application/json' },\r     body: JSON.stringify({ \r       \"name\": \"promo-today\", \r       \"html\": \"<h1>Selamat Datang</h1><p>Ini halaman otomatis.</p>\" \r     })\r   });\r   const data = await res.json();\r   console.log(data);\r }",
       "params": [
         {
           "name": "name",
@@ -1855,7 +1780,7 @@
       "method": "GET",
       "path": "/api/tools/quran",
       "responseType": "json",
-      "example": "async function getQuran() {\n   const res = await fetch('/api/tools/quran?surah=10&ayah=1,2');\n   const data = await res.json();\n   console.log(data.result.data);\n }",
+      "example": "async function getQuran() {\r   const res = await fetch('/api/tools/quran?surah=10&ayah=1,2');\r   const data = await res.json();\r   console.log(data.result.data);\r }",
       "params": [
         {
           "name": "surah",
@@ -1880,7 +1805,7 @@
       "method": "POST",
       "path": "/api/tools/removebg",
       "responseType": "json",
-      "example": "// Contoh penggunaan\n async function removeBg() {\n   try {\n     const response = await fetch('/api/tools/removebg', {\n       method: 'POST',\n       headers: { 'Content-Type': 'application/json' },\n       body: JSON.stringify({ \n         \"url\": \"https://puruboy-api.vercel.app/example.jpg\" \n       })\n     });\n \n     const data = await response.json();\n     console.log(data); \n     // Output: { status: 'success', url: 'https://domain.com/api/media/...' }\n   } catch (error) {\n     console.error('Error:', error.message);\n   }\n }\n \n removeBg();",
+      "example": "// Contoh penggunaan\r async function removeBg() {\r   try {\r     const response = await fetch('/api/tools/removebg', {\r       method: 'POST',\r       headers: { 'Content-Type': 'application/json' },\r       body: JSON.stringify({ \r         \"url\": \"https://puruboy-api.vercel.app/example.jpg\" \r       })\r     });\r \r     const data = await response.json();\r     console.log(data); \r     // Output: { status: 'success', url: 'https://domain.com/api/media/...' }\r   } catch (error) {\r     console.error('Error:', error.message);\r   }\r }\r \r removeBg();",
       "params": [
         {
           "name": "url",
@@ -1898,7 +1823,7 @@
       "method": "POST",
       "path": "/api/tools/removebg-v2",
       "responseType": "json",
-      "example": "// Contoh penggunaan\n async function removeBg() {\n   try {\n     const response = await fetch('/api/tools/removebg-v2', {\n       method: 'POST',\n       headers: { 'Content-Type': 'application/json' },\n       body: JSON.stringify({ \n         \"url\": \"https://puruboy-api.vercel.app/example.jpg\" \n       })\n     });\n \n     const data = await response.json();\n     console.log(data); \n   } catch (error) {\n     console.error('Error:', error.message);\n   }\n }",
+      "example": "// Contoh penggunaan\r async function removeBg() {\r   try {\r     const response = await fetch('/api/tools/removebg-v2', {\r       method: 'POST',\r       headers: { 'Content-Type': 'application/json' },\r       body: JSON.stringify({ \r         \"url\": \"https://puruboy-api.vercel.app/example.jpg\" \r       })\r     });\r \r     const data = await response.json();\r     console.log(data); \r   } catch (error) {\r     console.error('Error:', error.message);\r   }\r }",
       "params": [
         {
           "name": "url",
@@ -1916,7 +1841,7 @@
       "method": "POST",
       "path": "/api/tools/reviva",
       "responseType": "json",
-      "example": "async function colorizeImage() {\n   const response = await fetch('/api/tools/reviva', {\n     method: 'POST',\n     headers: { 'Content-Type': 'application/json' },\n     body: JSON.stringify({ \n       \"url\": \"https://puruboy-api.vercel.app/example.jpg\" \n     })\n   });\n \n   const reader = response.body.getReader();\n   const decoder = new TextDecoder();\n   \n   while (true) {\n     const { done, value } = await reader.read();\n     if (done) break;\n     const text = decoder.decode(value);\n     if(text.includes('[true]')) {\n        const retrieveUrl = text.replace('[true]', '').trim();\n        console.log(\"Data tersedia di:\", retrieveUrl);\n     }\n   }\n }",
+      "example": "async function colorizeImage() {\r   const response = await fetch('/api/tools/reviva', {\r     method: 'POST',\r     headers: { 'Content-Type': 'application/json' },\r     body: JSON.stringify({ \r       \"url\": \"https://puruboy-api.vercel.app/example.jpg\" \r     })\r   });\r \r   const reader = response.body.getReader();\r   const decoder = new TextDecoder();\r   \r   while (true) {\r     const { done, value } = await reader.read();\r     if (done) break;\r     const text = decoder.decode(value);\r     if(text.includes('[true]')) {\r        const retrieveUrl = text.replace('[true]', '').trim();\r        console.log(\"Data tersedia di:\", retrieveUrl);\r     }\r   }\r }",
       "params": [
         {
           "name": "url",
@@ -1934,7 +1859,7 @@
       "method": "GET",
       "path": "/api/tools/sholat",
       "responseType": "json",
-      "example": "async function getSholat() {\n   const res = await fetch('/api/tools/sholat?q=jakarta');\n   const data = await res.json();\n   console.log(data);\n }",
+      "example": "async function getSholat() {\r   const res = await fetch('/api/tools/sholat?q=jakarta');\r   const data = await res.json();\r   console.log(data);\r }",
       "params": [
         {
           "name": "q",
@@ -1952,7 +1877,7 @@
       "method": "POST",
       "path": "/api/tools/stabilizer",
       "responseType": "json",
-      "example": "async function stabilize() {\n   const res = await fetch('/api/tools/stabilizer', {\n     method: 'POST',\n     headers: { 'Content-Type': 'application/json' },\n     body: JSON.stringify({ \"url\": \"https://puruboy-api.vercel.app/example.mp4\" })\n   });\n   const data = await res.json();\n   console.log(data);\n }",
+      "example": "async function stabilize() {\r   const res = await fetch('/api/tools/stabilizer', {\r     method: 'POST',\r     headers: { 'Content-Type': 'application/json' },\r     body: JSON.stringify({ \"url\": \"https://puruboy-api.vercel.app/example.mp4\" })\r   });\r   const data = await res.json();\r   console.log(data);\r }",
       "params": [
         {
           "name": "url",
@@ -1970,7 +1895,7 @@
       "method": "POST",
       "path": "/api/tools/unblur",
       "responseType": "json",
-      "example": "// Contoh penggunaan SSE di client\n async function unblurImage() {\n   const response = await fetch('/api/tools/unblur', {\n     method: 'POST',\n     headers: { 'Content-Type': 'application/json' },\n     body: JSON.stringify({ \"url\": \"https://puruboy-api.vercel.app/example.jpg\" })\n   });\n   \n   const reader = response.body.getReader();\n   const decoder = new TextDecoder();\n   while (true) {\n     const { done, value } = await reader.read();\n     if (done) break;\n     const text = decoder.decode(value);\n     if(text.includes('[true]')) {\n        const url = text.replace('[true]', '').trim();\n        console.log(\"Success:\", url);\n     }\n   }\n }",
+      "example": "// Contoh penggunaan SSE di client\r async function unblurImage() {\r   const response = await fetch('/api/tools/unblur', {\r     method: 'POST',\r     headers: { 'Content-Type': 'application/json' },\r     body: JSON.stringify({ \"url\": \"https://puruboy-api.vercel.app/example.jpg\" })\r   });\r   \r   const reader = response.body.getReader();\r   const decoder = new TextDecoder();\r   while (true) {\r     const { done, value } = await reader.read();\r     if (done) break;\r     const text = decoder.decode(value);\r     if(text.includes('[true]')) {\r        const url = text.replace('[true]', '').trim();\r        console.log(\"Success:\", url);\r     }\r   }\r }",
       "params": [
         {
           "name": "url",
@@ -1988,7 +1913,7 @@
       "method": "POST",
       "path": "/api/tools/upscale",
       "responseType": "json",
-      "example": "// Contoh penggunaan SSE\n async function upscaleImage() {\n   const response = await fetch('/api/tools/upscale', {\n     method: 'POST',\n     headers: { 'Content-Type': 'application/json' },\n     body: JSON.stringify({ \"url\": \"https://puruboy-api.vercel.app/example.jpg\" })\n   });\n   \n   const reader = response.body.getReader();\n   // Read stream...\n }",
+      "example": "// Contoh penggunaan SSE\r async function upscaleImage() {\r   const response = await fetch('/api/tools/upscale', {\r     method: 'POST',\r     headers: { 'Content-Type': 'application/json' },\r     body: JSON.stringify({ \"url\": \"https://puruboy-api.vercel.app/example.jpg\" })\r   });\r   \r   const reader = response.body.getReader();\r   // Read stream...\r }",
       "params": [
         {
           "name": "url",
