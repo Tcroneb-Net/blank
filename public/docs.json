@@ -237,63 +237,6 @@
       ]
     },
     {
-      "title": "Claude Haiku AI",
-      "summary": "Claude Haiku Chat (Overchat).",
-      "description": "Berinteraksi dengan model Claude Haiku melalui provider Overchat.ai. Memberikan jawaban cerdas dan cepat. Credit: Hazel.",
-      "method": "POST",
-      "path": "/api/ai/overchat",
-      "responseType": "json",
-      "example": "async function askClaude() {\r   const res = await fetch('/api/ai/overchat', {\r     method: 'POST',\r     headers: { 'Content-Type': 'application/json' },\r     body: JSON.stringify({ \"question\": \"Halo Claude!\" })\r   });\r   const data = await res.json();\r   console.log(data.result);\r }",
-      "params": [
-        {
-          "name": "question",
-          "in": "body",
-          "type": "string",
-          "description": "Pertanyaan atau pesan untuk AI.",
-          "required": true
-        }
-      ]
-    },
-    {
-      "title": "puruAI (Time Aware)",
-      "summary": "Advanced AI Gateway by PuruBoy.",
-      "description": "Model AI yang menyadari waktu dan urutan pesan. Mendukung persistensi riwayat (history) per UserID menggunakan Node-cache.",
-      "method": "POST",
-      "path": "/api/ai/puruai",
-      "responseType": "json",
-      "example": "async function chat() {\r   const res = await fetch('/api/ai/puruai', {\r     method: 'POST',\r     headers: { 'Content-Type': 'application/json' },\r     body: JSON.stringify({ \r       \"userid\": \"user-session-001\", \r       \"prompt\": \"Halo, siapa namamu?\",\r       \"model\": \"puruboy-flash\",\r       \"system\": \"Kamu adalah AI asisten dari PuruBoy yang ramah.\"\r     })\r   });\r   const data = await res.json();\r   console.log(data);\r }",
-      "params": [
-        {
-          "name": "userid",
-          "in": "body",
-          "type": "string",
-          "description": "Session ID untuk riwayat pesan persisten.",
-          "required": true
-        },
-        {
-          "name": "prompt",
-          "in": "body",
-          "type": "string",
-          "description": "Pesan dari pengguna.",
-          "required": true
-        },
-        {
-          "name": "model",
-          "in": "body",
-          "type": "string",
-          "description": "Pilihan model: 'puruboy-flash' atau 'puruboy-pro'.",
-          "required": true
-        },
-        {
-          "name": "system",
-          "in": "body",
-          "type": "string",
-          "description": "(Opsional) Instruksi kepribadian dasar AI.",
-          "required": false
-        }
-      ]
-    },
-    {
       "title": "Quillbot AI Chat",
       "summary": "Chat via Quillbot AI (Stream).",
       "description": "Berinteraksi dengan model AI Quillbot yang mendukung streaming response. Berguna untuk menjawab pertanyaan, melakukan parafrase, atau riset teks. Endpoint ini menggunakan Server-Sent Events (SSE).",
